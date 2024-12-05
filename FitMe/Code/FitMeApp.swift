@@ -1,10 +1,3 @@
-//
-//  FitMeApp.swift
-//  FitMe
-//
-//  Created by Andrei Roberto Oleniuc on 30.11.2024.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -25,7 +18,7 @@ struct FitMeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FitMeNavigation()
         }
         .modelContainer(sharedModelContainer)
     }
