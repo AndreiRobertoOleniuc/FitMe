@@ -12,18 +12,22 @@ struct FitMeNavigation: View {
                     .tabItem {
                         Label("Today", systemImage: "house")
                     }
+                    .tag(1)
                 WorkoutView()
                     .tabItem {
                         Label("Workouts", systemImage: "dumbbell")
                     }
+                    .tag(2)
                 CalendarView()
                     .tabItem {
                         Label("Calendar", systemImage: "calendar")
                     }
+                    .tag(3)
                 ProfileView()
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
+                    .tag(4)
             }
         }
     }
