@@ -6,6 +6,7 @@ import SwiftData
         .modelContainer(for: [WorkoutDataModel.self, ExerciseDataModel.self], inMemory: true)
 }
 
+
 struct WorkoutView: View {
     @StateObject var viewModelExercise = ExerciseViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"))
     @Environment(\.modelContext) private var modelContext
