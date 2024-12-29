@@ -1,43 +1,99 @@
 import SwiftUI
 import SwiftData
-
-#Preview {
-    WorkoutView()
-        .modelContainer(for: [WorkoutDataModel.self, ExerciseDataModel.self], inMemory: true)
-}
-
-
+ 
 struct WorkoutView: View {
-    @StateObject var viewModelExercise = ExerciseViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"))
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \WorkoutDataModel.name) private var workouts: [WorkoutDataModel]
-
+    @StateObject private var viewModelExercise = ExerciseViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"), dataSource: .shared)
+ 
+    @State private var showingAddWorkout = false
+    @State private var newWorkoutName = ""
+    @State private var newWorkoutDescription = ""
+ 
     var body: some View {
-        NavigationStack {
-            List(workouts) { workout in
-                Text(workout.name)
+        NavigationView {
+            List {
+                ForEach(viewModelExercise.workouts) { workout in
+                    NavigationLink(destination: WorkoutDetailView(workout: workout)) {
+                        VStack(alignment: .leading) {
+                            Text(workout.name)
+                                .font(.headline)
+                            Text(workout.workoutDescription)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .onDelete(perform: deleteWorkout)
             }
-            .navigationTitle("My Workouts")
+            .navigationTitle("Workouts")
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: createNewWorkout) {
-                        Text("Create New Workout")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingAddWorkout = true }) {
+                        Image(systemName: "plus")
                     }
                 }
             }
+            .sheet(isPresented: $showingAddWorkout) {
+                NavigationView {
+                    Form {
+                        TextField("Workout Name", text: $newWorkoutName)
+                        TextField("Description", text: $newWorkoutDescription)
+                    }
+                    .navigationTitle("New Workout")
+                    .navigationBarItems(
+                        leading: Button("Cancel") {
+                            showingAddWorkout = false
+                        },
+                        trailing: Button("Save") {
+                            addWorkout()
+                            showingAddWorkout = false
+                        }
+                    )
+                }
+            }
+        }
+        .onAppear {
+            viewModelExercise.fetchWorkouts()
         }
     }
     
-    func createNewWorkout() {
-         let newWorkout = WorkoutDataModel(name: "New Workout", workoutDescription: "Description")
-         modelContext.insert(newWorkout)
-     }
+    private func addWorkout() {
+        let workout = WorkoutDataModel(
+            name: newWorkoutName,
+            workoutDescription: newWorkoutDescription
+        )
+        viewModelExercise.addWorkout(workout: workout)
+        viewModelExercise.fetchWorkouts()
+        newWorkoutName = ""
+        newWorkoutDescription = ""
+    }
+    
+    private func deleteWorkout(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let workout = viewModelExercise.workouts[index]
+            viewModelExercise.deleteWorkout(workout)
+        }
+        viewModelExercise.fetchWorkouts()
+    }
+ 
 }
-
+ 
+struct WorkoutDetailView: View {
+    let workout: WorkoutDataModel
+    
+    var body: some View {
+        VStack {
+            Text(workout.name)
+                .font(.title)
+            Text(workout.workoutDescription)
+                .padding()
+            
+            List(workout.exercises) { exercise in
+                Text(exercise.name)
+            }
+        }
+    }
+}
+ 
 struct SearchExercise: View {
     @ObservedObject var viewModelExercise: ExerciseViewModel
     @State private var searchText = ""
@@ -83,3 +139,4 @@ struct SearchExercise: View {
         }
     }
 }
+ 

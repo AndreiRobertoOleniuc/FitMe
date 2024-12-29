@@ -1,16 +1,20 @@
 import Foundation
-
+import SwiftData
+ 
 @MainActor
 class ExerciseViewModel: ObservableObject {
     private let model: ExerciseModel
+    private let dataSource: SwiftDataService
     
-    init(dataService: DataServiceProtocol) {
+    init(dataService: DataServiceProtocol, dataSource: SwiftDataService) {
         self.model = ExerciseModel(dataService: dataService)
+        self.dataSource = dataSource
     }
     
     @Published var exercises: [Suggestion] = []
     @Published var errorMessage: String?
     @Published var isLoading = false
+    @Published var workouts: [WorkoutDataModel] = []
     
     func fetchExercises(query: String){
         isLoading = true
@@ -36,4 +40,18 @@ class ExerciseViewModel: ObservableObject {
             isLoading = false
         }
     }
+    
+    func fetchWorkouts(){
+        workouts = dataSource.fetchWorkouts()
+    }
+    
+    func addWorkout(workout: WorkoutDataModel){
+        dataSource.addWorkout(workout)
+    }
+ 
+    func deleteWorkout(_ workout: WorkoutDataModel) {
+        dataSource.deleteWorkout(workout)
+        fetchWorkouts()
+    }
+ 
 }
