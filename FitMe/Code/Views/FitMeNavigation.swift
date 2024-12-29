@@ -1,15 +1,7 @@
 import SwiftUI
 import SwiftData
 
-#Preview {
-    FitMeNavigation()
-        .modelContainer(for: Item.self, inMemory: true)
-}
-
 struct FitMeNavigation: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
     var body: some View {
         NavigationStack{
             TabView {
