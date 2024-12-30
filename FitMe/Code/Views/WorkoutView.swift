@@ -12,7 +12,7 @@ struct WorkoutView: View {
         NavigationView {
             List {
                 ForEach(viewModelExercise.workouts) { workout in
-                    NavigationLink(destination: WorkoutDetailView(workout: workout)) {
+                    NavigationLink(destination: WorkoutDetailView(workout: workout, viewModel: viewModelExercise)) {
                         VStack(alignment: .leading) {
                             Text(workout.name)
                                 .font(.headline)
@@ -79,60 +79,112 @@ struct WorkoutView: View {
  
 struct WorkoutDetailView: View {
     let workout: WorkoutDataModel
+    @ObservedObject var viewModel: ExerciseViewModel
+    @State private var showingSearch = false
+    @State private var isEditing = false
     
     var body: some View {
-        VStack {
-            Text(workout.name)
-                .font(.title)
-            Text(workout.workoutDescription)
-                .padding()
-            
-            List(workout.exercises) { exercise in
-                Text(exercise.name)
+        List {
+            Section(header: Text("Details")) {
+                Text(workout.name)
+                    .font(.headline)
+                Text(workout.workoutDescription)
+                    .font(.subheadline)
             }
+            
+            Section(header: Text("Exercises")) {
+                ForEach(workout.exercises) { exercise in
+                    HStack(spacing: 16) {
+                        ExerciseImageView(
+                            imageURL: ExerciseImageView.getFullImageURL(exercise.image),
+                            size: 60,
+                            cornerRadius: 8
+                        )
+                        VStack(alignment: .leading) {
+                            Text(exercise.name)
+                                .font(.headline)
+                            Text(exercise.category)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                        if isEditing {
+                            Button(action: {
+                                // Delete exercise implementation
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+        }
+        .navigationTitle("Workout Details")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingSearch = true }) {
+                    Image(systemName: "plus")
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { isEditing.toggle() }) {
+                    Text(isEditing ? "Done" : "Edit")
+                }
+            }
+        }
+        .sheet(isPresented: $showingSearch) {
+            SearchExercise(viewModel: viewModel, workout: workout)
         }
     }
 }
+
  
 struct SearchExercise: View {
-    @ObservedObject var viewModelExercise: ExerciseViewModel
+    @ObservedObject var viewModel: ExerciseViewModel
+    let workout: WorkoutDataModel
+    @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
     
-    var body: some View{
+    var body: some View {
         NavigationView {
             VStack {
-                if viewModelExercise.isLoading {
+                if viewModel.isLoading {
                     ProgressView()
-                } else if let error = viewModelExercise.errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
                 } else {
-                    List(viewModelExercise.exercises, id: \.data.id) { suggestion in
-                        HStack(spacing: 16) {
-                            ExerciseImageView(
-                                imageURL: ExerciseImageView.getFullImageURL(suggestion.data.image),
-                                size: 60,
-                                cornerRadius: 8
-                            )
-                            VStack(alignment: .leading) {
-                                Text(suggestion.value)
-                                    .font(.headline)
-                                Text(suggestion.data.category)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                    List(viewModel.exercises, id: \.data.id) { suggestion in
+                        Button(action: {
+                            viewModel.addExerciseToWorkout(suggestion.data, to: workout)
+                            dismiss()
+                        }) {
+                            HStack(spacing: 16) {
+                                ExerciseImageView(
+                                    imageURL: ExerciseImageView.getFullImageURL(suggestion.data.image),
+                                    size: 60,
+                                    cornerRadius: 8
+                                )
+                                VStack(alignment: .leading) {
+                                    Text(suggestion.value)
+                                        .font(.headline)
+                                    Text(suggestion.data.category)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
+                        .foregroundColor(.primary)
                     }
                 }
             }
-            .navigationTitle("Exercises")
+            .navigationTitle("Add Exercise")
             .searchable(text: $searchText)
-            .onChange(of: searchText) { oldValue, newValue in
+            .onChange(of: searchText) { _, newValue in
                 Task {
                     try? await Task.sleep(for: .milliseconds(300))
-                    if !Task.isCancelled && !newValue.isEmpty{
-                        viewModelExercise.fetchExercises(query: newValue)
+                    if !newValue.isEmpty {
+                        viewModel.fetchExercises(query: newValue)
                     }
                 }
             }

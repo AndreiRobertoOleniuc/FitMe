@@ -46,11 +46,17 @@ class ExerciseViewModel: ObservableObject {
     }
     
     func addWorkout(workout: WorkoutDataModel){
-        dataSource.addWorkout(workout)
+        dataSource.updateOrAddWorkout(workout)
     }
  
     func deleteWorkout(_ workout: WorkoutDataModel) {
         dataSource.deleteWorkout(workout)
+        fetchWorkouts()
+    }
+    
+    func addExerciseToWorkout(_ exercise: Exercise, to workout: WorkoutDataModel) {
+        workout.addExercise(exercise)
+        dataSource.updateOrAddWorkout(workout)
         fetchWorkouts()
     }
  

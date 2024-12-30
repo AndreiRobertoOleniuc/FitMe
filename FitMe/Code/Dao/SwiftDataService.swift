@@ -28,7 +28,7 @@ class SwiftDataService {
         }
     }
     
-    func addWorkout(_ workout: WorkoutDataModel) {
+    func updateOrAddWorkout(_ workout: WorkoutDataModel) {
         modelContext.insert(workout)
         save()
     }
