@@ -47,16 +47,6 @@ class SwiftDataService {
         }
     }
     
-    func addExercise(_ exercise: ExerciseDataModel) {
-        modelContext.insert(exercise)
-        save()
-    }
-    
-    func deleteExercise(_ exercise: ExerciseDataModel) {
-        modelContext.delete(exercise)
-        save()
-    }
-    
     private func save() {
         do {
             try modelContext.save()

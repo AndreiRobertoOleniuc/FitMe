@@ -59,5 +59,11 @@ class ExerciseViewModel: ObservableObject {
         dataSource.updateOrAddWorkout(workout)
         fetchWorkouts()
     }
+    
+    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: WorkoutDataModel) {
+        guard let index = workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
+        workout.exercises.remove(at: index)
+        dataSource.updateOrAddWorkout(workout)
+    }
  
 }
