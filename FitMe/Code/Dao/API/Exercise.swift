@@ -18,6 +18,9 @@ struct Exercise: Codable, Identifiable {
     let name: String
     let category: String
     let image, imageThumbnail: String?
+    var sets: Int = 3
+    var reps: Int = 12
+    var rest: Int = 60
 
     init(id: Int, baseID: Int, name: String, category: String, image: String, imageThumbnail: String?) {
         self.id = id
@@ -31,7 +34,9 @@ struct Exercise: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id
         case baseID = "base_id"
-        case name, category, image
+        case name
+        case category
+        case image
         case imageThumbnail = "image_thumbnail"
     }
 }

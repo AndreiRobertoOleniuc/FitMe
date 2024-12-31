@@ -4,6 +4,7 @@ struct WorkoutExerciseRow: View {
     let exercise: Exercise
     let isEditing: Bool
     let onDelete: () -> Void
+    let onEdit: () -> Void
     
     var body: some View {
         HStack(spacing: 16) {
@@ -15,19 +16,23 @@ struct WorkoutExerciseRow: View {
             VStack(alignment: .leading) {
                 Text(exercise.name)
                     .font(.headline)
-                Text(exercise.category)
+                Text("\(exercise.category) | \(exercise.sets)x\(exercise.reps) | \(exercise.rest)s rest")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
             Spacer()
             if isEditing {
-                Button(action: onDelete) {
-                    Image(systemName: "trash")
-                        .foregroundColor(.red)
+                HStack {
+                    Button(action: onEdit) {
+                        Image(systemName: "pencil")
+                    }
+                    Button(action: onDelete) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
                 }
             }
         }
         .padding(.vertical, 4)
     }
 }
-

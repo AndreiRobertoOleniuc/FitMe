@@ -10,8 +10,7 @@ class SwiftDataService {
     @MainActor
     private init() {
         let schema = Schema([
-            WorkoutDataModel.self,
-            ExerciseDataModel.self
+            WorkoutDataModel.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
  
@@ -38,14 +37,6 @@ class SwiftDataService {
         save()
     }
     
-    // Exercise CRUD operations
-    func fetchExercises() -> [ExerciseDataModel] {
-        do {
-            return try modelContext.fetch(FetchDescriptor<ExerciseDataModel>())
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
     
     private func save() {
         do {

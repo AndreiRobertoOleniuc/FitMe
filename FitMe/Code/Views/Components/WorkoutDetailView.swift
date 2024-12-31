@@ -5,6 +5,7 @@ struct WorkoutDetailView: View {
     @ObservedObject var viewModel: ExerciseViewModel
     @State private var showingSearch = false
     @State private var isEditing = false
+    @State private var selectedExercise: Exercise?
     
     var body: some View {
         List {
@@ -17,6 +18,9 @@ struct WorkoutDetailView: View {
                         isEditing: isEditing,
                         onDelete: {
                             viewModel.deleteExerciseFromWorkout(exercise, to: workout)
+                        },
+                        onEdit: {
+                            selectedExercise = exercise
                         }
                     )
                 }
@@ -37,6 +41,16 @@ struct WorkoutDetailView: View {
         }
         .sheet(isPresented: $showingSearch) {
             SearchExercise(viewModel: viewModel, workout: workout)
+        }
+        .sheet(item: $selectedExercise) { exercise in
+            EditExerciseSheet(
+                exercise: exercise
+            ) { updatedExercise in
+                if let index = workout.exercises.firstIndex(where: { $0.id == updatedExercise.id }) {
+                    workout.exercises[index] = updatedExercise
+                }
+                viewModel.addExerciseToWorkout(updatedExercise, to: workout)
+            }
         }
     }
 }
