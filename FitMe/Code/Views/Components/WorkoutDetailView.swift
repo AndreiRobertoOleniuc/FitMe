@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WorkoutDetailView: View {
-    let workout: WorkoutDataModel
+    let workout: Workout
     @ObservedObject var viewModel: ExerciseViewModel
     @State private var showingSearch = false
     @State private var isEditing = false

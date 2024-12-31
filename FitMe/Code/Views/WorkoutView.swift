@@ -57,7 +57,7 @@ struct WorkoutView: View {
     }
     
     private func addWorkout() {
-        let workout = WorkoutDataModel(
+        let workout = Workout(
             name: newWorkoutName,
             workoutDescription: newWorkoutDescription
         )

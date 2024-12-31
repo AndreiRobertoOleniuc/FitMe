@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WorkoutDetailsSection: View {
-    let workout: WorkoutDataModel
+    let workout: Workout
     
     var body: some View {
         Section(header: Text("Details")) {

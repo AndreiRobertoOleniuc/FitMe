@@ -14,7 +14,7 @@ class ExerciseViewModel: ObservableObject {
     @Published var exercises: [Suggestion] = []
     @Published var errorMessage: String?
     @Published var isLoading = false
-    @Published var workouts: [WorkoutDataModel] = []
+    @Published var workouts: [Workout] = []
     
     func fetchExercises(query: String){
         isLoading = true
@@ -45,22 +45,22 @@ class ExerciseViewModel: ObservableObject {
         workouts = dataSource.fetchWorkouts()
     }
     
-    func addWorkout(workout: WorkoutDataModel){
+    func addWorkout(workout: Workout){
         dataSource.updateOrAddWorkout(workout)
     }
  
-    func deleteWorkout(_ workout: WorkoutDataModel) {
+    func deleteWorkout(_ workout: Workout) {
         dataSource.deleteWorkout(workout)
         fetchWorkouts()
     }
     
-    func addExerciseToWorkout(_ exercise: Exercise, to workout: WorkoutDataModel) {
+    func addExerciseToWorkout(_ exercise: Exercise, to workout: Workout) {
         workout.addExercise(exercise)
         dataSource.updateOrAddWorkout(workout)
         fetchWorkouts()
     }
     
-    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: WorkoutDataModel) {
+    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: Workout) {
         guard let index = workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
         workout.exercises.remove(at: index)
         dataSource.updateOrAddWorkout(workout)

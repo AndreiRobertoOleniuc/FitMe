@@ -3,7 +3,7 @@ import SwiftData
  
 struct SearchExercise: View {
     @ObservedObject var viewModel: ExerciseViewModel
-    let workout: WorkoutDataModel
+    let workout: Workout
     @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
     
