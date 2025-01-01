@@ -13,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "appIcon 3.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -24,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "appIcon 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -74,6 +76,7 @@
       "size" : "512x512"
     },
     {
+      "filename" : "appIcon 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

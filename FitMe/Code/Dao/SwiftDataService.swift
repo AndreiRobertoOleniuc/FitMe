@@ -10,7 +10,8 @@ class SwiftDataService {
     @MainActor
     private init() {
         let schema = Schema([
-            Workout.self
+            Workout.self,
+            Exercise.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
  
@@ -34,6 +35,11 @@ class SwiftDataService {
     
     func deleteWorkout(_ workout: Workout) {
         modelContext.delete(workout)
+        save()
+    }
+
+    func deleteExercise(_ exercise: Exercise) {
+        modelContext.delete(exercise)
         save()
     }
     

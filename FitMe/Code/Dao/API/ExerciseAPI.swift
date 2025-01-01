@@ -6,13 +6,24 @@ struct ExerciseSearchReponse: Codable {
 }
 
 // MARK: - Suggestion
-struct Suggestion: Codable {
+struct Suggestion: Codable, Identifiable {
+    let id: UUID = UUID()
     let value: String
-    let data: Exercise
+    let data: ExerciseAPI
+
+    init(value: String, data: ExerciseAPI) {
+        self.value = value
+        self.data = data
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case value
+        case data
+    }
 }
 
 // MARK: - Exercise
-struct Exercise: Codable, Identifiable {
+struct ExerciseAPI: Codable, Identifiable {
     let id: Int
     let baseID: Int
     let name: String

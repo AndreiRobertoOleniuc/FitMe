@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
  
 @MainActor
-class ExerciseViewModel: ObservableObject {
+class WorkoutViewModel: ObservableObject {
     private let model: ExerciseModel
     private let dataSource: SwiftDataService
     
@@ -24,7 +24,7 @@ class ExerciseViewModel: ObservableObject {
                 exercises = fetchedSuggestions.map { suggestion in
                     Suggestion(
                         value: suggestion.value,
-                        data: Exercise(
+                        data: ExerciseAPI(
                             id: suggestion.data.id,
                             baseID: suggestion.data.baseID,
                             name: suggestion.data.name,
@@ -54,16 +54,27 @@ class ExerciseViewModel: ObservableObject {
         fetchWorkouts()
     }
     
-    func addExerciseToWorkout(_ exercise: Exercise, to workout: Workout) {
-        workout.addExercise(exercise)
+    func addExerciseToWorkout(_ exercise: ExerciseAPI, to workout: Workout) {
+        workout.addExercise(convertToExercise(exercise))
         dataSource.updateOrAddWorkout(workout)
         fetchWorkouts()
     }
     
-    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: Workout) {
+    func updateExerciseInWorkout(_ exercise: Exercise, to workout: Workout) {
         guard let index = workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
-        workout.exercises.remove(at: index)
+        workout.exercises[index] = exercise
         dataSource.updateOrAddWorkout(workout)
+    }
+    
+    
+    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: Workout) {
+        workout.exercises.removeAll { $0.id == exercise.id }
+        dataSource.deleteExercise(exercise)
+        dataSource.updateOrAddWorkout(workout)
+    }
+    
+    private func convertToExercise(_ exercise: ExerciseAPI) -> Exercise {
+        return Exercise(id: exercise.id, baseID: exercise.baseID, name: exercise.name, category: exercise.category, image: exercise.image, imageThumbnail: exercise.imageThumbnail)
     }
  
 }

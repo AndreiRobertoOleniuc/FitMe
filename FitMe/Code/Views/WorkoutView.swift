@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
  
 struct WorkoutView: View {
-    @StateObject private var viewModelExercise = ExerciseViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"), dataSource: .shared)
+    @StateObject private var viewModelExercise = WorkoutViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"), dataSource: .shared)
  
     @State private var showingAddWorkout = false
     @State private var newWorkoutName = ""

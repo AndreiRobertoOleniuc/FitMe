@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
  
 struct SearchExercise: View {
-    @ObservedObject var viewModel: ExerciseViewModel
+    @ObservedObject var viewModel: WorkoutViewModel
     let workout: Workout
     @Environment(\.dismiss) var dismiss
     @State private var searchText = ""
@@ -13,7 +13,7 @@ struct SearchExercise: View {
                 if viewModel.isLoading {
                     ProgressView()
                 } else {
-                    List(viewModel.exercises, id: \.data.id) { suggestion in
+                    List(viewModel.exercises) { suggestion in 
                         Button(action: {
                             viewModel.addExerciseToWorkout(suggestion.data, to: workout)
                             dismiss()
