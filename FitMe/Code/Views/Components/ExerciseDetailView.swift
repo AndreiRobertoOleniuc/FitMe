@@ -23,10 +23,11 @@ struct ExerciseDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                ExerciseImageView(
-                    imageURL: ExerciseImageView.getFullImageURL(exercise.image),
+                ImageView(
+                    imageURL: ImageView.getFullImageURL(exercise.image),
                     size: 200,
-                    cornerRadius: 12
+                    cornerRadius: 12,
+                    systemName: ImageView.getSystemImageName(exercise.category)
                 )
                 
                 VStack(alignment: .leading, spacing: 8) {

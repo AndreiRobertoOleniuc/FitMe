@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ExerciseImageView: View {
+struct ImageView: View {
     let imageURL: URL?
     let size: CGFloat
     let cornerRadius: CGFloat

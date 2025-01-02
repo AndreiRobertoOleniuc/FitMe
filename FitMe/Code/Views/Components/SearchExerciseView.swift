@@ -19,10 +19,11 @@ struct SearchExercise: View {
                             dismiss()
                         }) {
                             HStack(spacing: 16) {
-                                ExerciseImageView(
-                                    imageURL: ExerciseImageView.getFullImageURL(suggestion.data.image),
+                                ImageView(
+                                    imageURL: ImageView.getFullImageURL(suggestion.data.image),
                                     size: 60,
-                                    cornerRadius: 8
+                                    cornerRadius: 8,
+                                    systemName: ImageView.getSystemImageName(suggestion.data.category)
                                 )
                                 VStack(alignment: .leading) {
                                     Text(suggestion.value)

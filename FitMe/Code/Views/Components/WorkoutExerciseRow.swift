@@ -5,10 +5,11 @@ struct WorkoutExerciseRow: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            ExerciseImageView(
-                imageURL: ExerciseImageView.getFullImageURL(exercise.image),
+            ImageView(
+                imageURL: ImageView.getFullImageURL(exercise.image),
                 size: 60,
-                cornerRadius: 8
+                cornerRadius: 8,
+                systemName: ImageView.getSystemImageName(exercise.category)
             )
             VStack(alignment: .leading) {
                 Text(exercise.name)
