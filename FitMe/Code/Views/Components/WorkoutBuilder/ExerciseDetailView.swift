@@ -10,14 +10,16 @@ struct ExerciseDetailView: View {
     @State private var editedSets: Int
     @State private var editedReps: Int
     @State private var editedRest: Int
+    @State private var editedWeight: Double
     
     init(workout: Workout, exercise: Exercise, viewModel: WorkoutViewModel) {
+        self.workout = workout
         self.exercise = exercise
         self.viewModel = viewModel
-        self.workout = workout
         _editedSets = State(initialValue: exercise.sets)
         _editedReps = State(initialValue: exercise.reps)
         _editedRest = State(initialValue: exercise.rest)
+        _editedWeight = State(initialValue: exercise.weight)
     }
     
     var body: some View {
@@ -30,58 +32,46 @@ struct ExerciseDetailView: View {
                     systemName: ImageView.getSystemImageName(exercise.category)
                 )
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(exercise.name)
-                        .font(.title2)
-                        .bold()
-                    
-                    Text(exercise.category)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
+                exerciseHeader
                 
-                VStack(spacing: 15) {
-                    DetailRow(title: "Sets", value: "\(editedSets)")
-                    DetailRow(title: "Reps", value: "\(editedReps)")
-                    DetailRow(title: "Rest", value: "\(editedRest) sec")
-                }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(12)
+                ExerciseParametersView(
+                    sets: editedSets,
+                    reps: editedReps,
+                    rest: editedRest,
+                    weight: editedWeight
+                )
                 .padding(.horizontal)
             }
         }
         .navigationTitle("Exercise Details")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { isEditing = true }) {
-                    Text("Edit")
-                }
+                Button("Edit") { isEditing = true }
             }
         }
         .sheet(isPresented: $isEditing) {
-            NavigationView {
-                Form {
-                    Section(header: Text("Training Parameters")) {
-                        Stepper("Sets: \(editedSets)", value: $editedSets, in: 1...10)
-                        Stepper("Reps: \(editedReps)", value: $editedReps, in: 1...30)
-                        Stepper("Rest: \(editedRest) sec", value: $editedRest, in: 30...180, step: 15)
-                    }
-                }
-                .navigationTitle("Edit Exercise")
-                .navigationBarItems(
-                    leading: Button("Cancel") {
-                        isEditing = false
-                    },
-                    trailing: Button("Save") {
-                        saveChanges()
-                        isEditing = false
-                    }
-                )
-            }
+            ExerciseEditSheet(
+                isPresented: $isEditing,
+                sets: $editedSets,
+                reps: $editedReps,
+                rest: $editedRest,
+                weight: $editedWeight,
+                onSave: saveChanges
+            )
         }
+    }
+    
+    private var exerciseHeader: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(exercise.name)
+                .font(.title2)
+                .bold()
+            Text(exercise.category)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
     }
     
     private func saveChanges() {
@@ -89,6 +79,60 @@ struct ExerciseDetailView: View {
         updatedExercise.sets = editedSets
         updatedExercise.reps = editedReps
         updatedExercise.rest = editedRest
+        updatedExercise.weight = editedWeight
         viewModel.updateExerciseInWorkout(updatedExercise, to: workout)
+    }
+}
+
+struct ExerciseParametersView: View {
+    let sets: Int
+    let reps: Int
+    let rest: Int
+    let weight: Double
+    
+    var body: some View {
+        VStack(spacing: 15) {
+            DetailRow(title: "Sets", value: "\(sets)")
+            DetailRow(title: "Reps", value: "\(reps)")
+            DetailRow(title: "Rest", value: "\(rest) sec")
+            DetailRow(title: "Weight", value: "\(weight) kg")
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+    }
+}
+
+
+struct ExerciseEditSheet: View {
+    @Binding var isPresented: Bool
+    @Binding var sets: Int
+    @Binding var reps: Int
+    @Binding var rest: Int
+    @Binding var weight: Double
+    var onSave: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Training Parameters")) {
+                    Stepper("Sets: \(sets)", value: $sets, in: 1...10)
+                    Stepper("Reps: \(reps)", value: $reps, in: 1...30)
+                    Stepper("Rest: \(rest) sec", value: $rest, in: 30...180, step: 15)
+                    Stepper("Weight: \(weight, specifier: "%.1f") kg", 
+                           value: $weight, 
+                           in: 2.5...300, 
+                           step: 2.5)
+                }
+            }
+            .navigationTitle("Edit Exercise")
+            .navigationBarItems(
+                leading: Button("Cancel") { isPresented = false },
+                trailing: Button("Save") {
+                    onSave()
+                    isPresented = false
+                }
+            )
+        }
     }
 }

@@ -11,6 +11,7 @@ final class Exercise {
     var sets: Int = 3
     var reps: Int = 12
     var rest: Int = 60
+    var weight: Double = 20
 
     init(id: Int, baseID: Int, name: String, category: String, image: String?, imageThumbnail: String?) {
         self.id = id
