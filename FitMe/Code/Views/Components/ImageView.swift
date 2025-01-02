@@ -48,6 +48,7 @@ struct ImageView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: size, height: size)
+                .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         } placeholder: {
             Image(systemName: systemName)
