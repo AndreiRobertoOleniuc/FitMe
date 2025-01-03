@@ -12,11 +12,26 @@ struct ActiveWorkout: View{
     
     var body: some View {
         VStack{
-            Text("Active Workout")
-                .padding()
-            TimerView(secondsElapsed: $secondsElapsed, 
-                     timerIsActive: $timerIsActive,
-                     timer: timer)
+            HStack{
+                TimerView(
+                    secondsElapsed: $secondsElapsed,
+                    timerIsActive: $timerIsActive,
+                    timer: timer
+                )
+                Spacer()
+                VStack{
+                    Text("Volume")
+                        .bold()
+                    Text("0 kg")
+                }
+                Spacer()
+                VStack{
+                    Text("Sets")
+                        .bold()
+                    Text("0")
+                }
+            }
+            .padding()
             Spacer()
             HStack {
                 Button(action: {
@@ -28,7 +43,6 @@ struct ActiveWorkout: View{
                     timerIsActive.toggle()
                 }) {
                     Text(timerIsActive ? "Pause" : "Start")
-                        .font(.title)
                         .padding()
                         .background(timerIsActive ? Color.blue : Color.green)
                         .foregroundColor(.white)
@@ -40,7 +54,6 @@ struct ActiveWorkout: View{
                     secondsElapsed = 0
                 }) {
                     Text("End")
-                        .font(.title)
                         .padding()
                         .background(Color.red)
                         .foregroundColor(.white)
@@ -66,9 +79,12 @@ struct TimerView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack {
+            Text("Duration")
+                .bold()
             Text(formattedTime)
-                .font(.largeTitle)
+                .font(.body)
+                .foregroundColor(Color.blue)
                 .monospacedDigit()
         }
         .onReceive(timer) { _ in
