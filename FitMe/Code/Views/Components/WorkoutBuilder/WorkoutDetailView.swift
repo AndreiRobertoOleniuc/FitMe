@@ -5,20 +5,38 @@ struct WorkoutDetailView: View {
     @ObservedObject var viewModel: WorkoutViewModel
     @State private var showingSearch = false
     @State private var selectedExercise: ExerciseAPI?
-    
+    @State private var startWorkout = false
+
     var body: some View {
-        List {
-            WorkoutDetailsSection(workout: workout)
-            
-            Section(header: Text("Exercises")) {
-                ForEach(workout.exercises) { exercise in
-                    NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
-                        WorkoutExerciseRow(
-                            exercise: exercise
-                        )
+        ZStack {
+            VStack {
+                List {
+                    WorkoutDetailsSection(workout: workout)
+                    
+                    Section(header: Text("Exercises")) {
+                        ForEach(workout.exercises) { exercise in
+                            NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
+                                WorkoutExerciseRow(
+                                    exercise: exercise
+                                )
+                            }
+                        }
+                        .onDelete(perform: deleteExercise)
                     }
                 }
-                .onDelete(perform: deleteExercise)
+                
+                Button(action: {
+                    startWorkout = true
+                }) {
+                    Text("Start Workout")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(10)
+                }
+                .padding()
             }
         }
         .navigationTitle("Workout Details")
@@ -31,6 +49,9 @@ struct WorkoutDetailView: View {
         }
         .sheet(isPresented: $showingSearch) {
             SearchExercise(viewModel: viewModel, workout: workout)
+        }
+        .navigationDestination(isPresented: $startWorkout) {
+            ActiveWorkout(viewModel: viewModel, workout: workout)
         }
     }
     
