@@ -11,7 +11,12 @@ struct ActiveWorkout: View{
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        VStack{
+        VStack(alignment: .leading){
+            Text(workout.name)
+                .font(.title3)
+                .bold()
+                .padding([.bottom,.top], 5)
+            Divider()
             HStack{
                 TimerView(
                     secondsElapsed: $secondsElapsed,
@@ -19,19 +24,20 @@ struct ActiveWorkout: View{
                     timer: timer
                 )
                 Spacer()
-                VStack{
+                VStack(alignment: .trailing){
                     Text("Volume")
                         .bold()
                     Text("0 kg")
                 }
                 Spacer()
-                VStack{
+                VStack(alignment: .trailing){
                     Text("Sets")
                         .bold()
                     Text("0")
                 }
             }
-            .padding()
+            .padding(.vertical)
+            Divider()
             Spacer()
             HStack {
                 Button(action: {
@@ -61,6 +67,7 @@ struct ActiveWorkout: View{
                 }
             }
         }
+        .padding(.horizontal)
         .frame(maxHeight: .infinity, alignment: .top)
     }
 }
@@ -79,7 +86,7 @@ struct TimerView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Duration")
                 .bold()
             Text(formattedTime)
