@@ -21,7 +21,8 @@ struct SearchExercise: View {
                             HStack(spacing: 16) {
                                 ImageView(
                                     imageURL: ImageView.getFullImageURL(suggestion.data.image),
-                                    size: 60,
+                                    width: 120,
+                                    height: 120,
                                     cornerRadius: 8,
                                     systemName: ImageView.getSystemImageName(suggestion.data.category)
                                 )

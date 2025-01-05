@@ -7,7 +7,8 @@ struct WorkoutExerciseRow: View {
         HStack(spacing: 16) {
             ImageView(
                 imageURL: ImageView.getFullImageURL(exercise.image),
-                size: 60,
+                width: 60,
+                height: 60,
                 cornerRadius: 8,
                 systemName: ImageView.getSystemImageName(exercise.category)
             )

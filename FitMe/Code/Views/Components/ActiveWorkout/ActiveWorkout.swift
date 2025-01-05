@@ -163,7 +163,8 @@ struct ExerciseCard: View {
         VStack(spacing: 16) {
             ImageView(
                 imageURL: ImageView.getFullImageURL(exercise.image),
-                size: 120,
+                width: 150,
+                height: 150,
                 cornerRadius: 10,
                 systemName: ImageView.getSystemImageName(exercise.category)
             )
