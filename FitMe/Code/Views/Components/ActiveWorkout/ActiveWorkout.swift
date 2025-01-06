@@ -9,7 +9,7 @@ struct ActiveWorkout: View {
     
     // Timer states
     @State private var secondsElapsed = 0
-    @State private var timerIsActive = false
+    @State private var timerIsActive = true
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -65,6 +65,7 @@ struct ActiveWorkout: View {
                 HStack {
                     Button(action: previousExercise) {
                         Image(systemName: "chevron.left")
+                            .font(.title2)
                             .padding()
                     }
                     .disabled(currentExerciseIndex == 0)
@@ -73,6 +74,7 @@ struct ActiveWorkout: View {
                     
                     Button(action: { toggleExerciseCompletion(currentExerciseIndex) }) {
                         Image(systemName: completedExercises.contains(currentExerciseIndex) ? "checkmark.circle.fill" : "checkmark.circle")
+                            .font(.title2)
                             .padding()
                     }
                     
@@ -80,6 +82,7 @@ struct ActiveWorkout: View {
                     
                     Button(action: nextExercise) {
                         Image(systemName: "chevron.right")
+                            .font(.title2)
                             .padding()
                     }
                     .disabled(currentExerciseIndex == workout.exercises.count - 1)
@@ -93,6 +96,7 @@ struct ActiveWorkout: View {
             HStack {
                 Button(action: toggleTimer) {
                     Text(timerIsActive ? "Pause" : "Start")
+                        .frame(width: 80, height: 20)
                         .padding()
                         .background(timerIsActive ? Color.blue : Color.green)
                         .foregroundColor(.white)
@@ -101,12 +105,15 @@ struct ActiveWorkout: View {
                 
                 Button(action: endWorkout) {
                     Text("End")
+                        .frame(width: 80, height: 20)
                         .padding()
                         .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(5)
                 }
             }
+            .frame(maxWidth: .infinity)
+            .frame(alignment: .center)
         }
         .padding(.horizontal)
         .frame(maxHeight: .infinity, alignment: .top)
@@ -135,13 +142,17 @@ struct ActiveWorkout: View {
     
     private func previousExercise() {
         if currentExerciseIndex > 0 {
-            currentExerciseIndex -= 1
+            withAnimation(.easeInOut) {
+                currentExerciseIndex -= 1
+            }
         }
     }
     
     private func nextExercise() {
         if currentExerciseIndex < workout.exercises.count - 1 {
-            currentExerciseIndex += 1
+            withAnimation(.easeInOut) {
+                currentExerciseIndex += 1
+            }
         }
     }
     
@@ -150,6 +161,7 @@ struct ActiveWorkout: View {
             completedExercises.remove(index)
         } else {
             completedExercises.insert(index)
+            nextExercise()
         }
     }
 }
