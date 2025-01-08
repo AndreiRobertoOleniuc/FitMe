@@ -11,7 +11,7 @@ class WorkoutViewModel: ObservableObject {
         self.dataSource = dataSource
     }
     
-    @Published var exercises: [Suggestion] = []
+    @Published var searchedExercises: [Suggestion] = []
     @Published var errorMessage: String?
     @Published var isLoading = false
     @Published var workouts: [Workout] = []
@@ -21,7 +21,7 @@ class WorkoutViewModel: ObservableObject {
         Task {
             do {
                 let fetchedSuggestions = try await model.searchExercise(query: query)
-                exercises = fetchedSuggestions.map { suggestion in
+                searchedExercises = fetchedSuggestions.map { suggestion in
                     Suggestion(
                         value: suggestion.value,
                         data: ExerciseAPI(

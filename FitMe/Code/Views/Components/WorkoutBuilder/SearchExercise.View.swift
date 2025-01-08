@@ -13,7 +13,7 @@ struct SearchExercise: View {
                 if viewModel.isLoading {
                     ProgressView()
                 } else {
-                    List(viewModel.exercises) { suggestion in 
+                    List(viewModel.searchedExercises) { suggestion in 
                         Button(action: {
                             viewModel.addExerciseToWorkout(suggestion.data, to: workout)
                             dismiss()
