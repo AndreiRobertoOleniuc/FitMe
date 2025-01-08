@@ -12,6 +12,7 @@ final class Exercise {
     var reps: Int = 12
     var rest: Int = 60
     var weight: Double = 20
+    var order: Int = 0
 
     init(id: Int, baseID: Int, name: String, category: String, image: String?, imageThumbnail: String?) {
         self.id = id

@@ -14,7 +14,7 @@ struct WorkoutDetailView: View {
                     WorkoutDetailsSection(workout: workout)
                     
                     Section(header: Text("Exercises")) {
-                        ForEach(workout.exercises) { exercise in
+                        ForEach(workout.exercises.sorted(by: { $0.order < $1.order })) { exercise in
                             NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
                                 WorkoutExerciseRow(
                                     exercise: exercise

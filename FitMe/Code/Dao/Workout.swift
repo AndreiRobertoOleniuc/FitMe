@@ -15,6 +15,7 @@ final class Workout: Identifiable {
     }
     
     func addExercise(_ exercise: Exercise) {
+        exercise.order = exercises.count
         exercises.append(exercise)
     }
 }

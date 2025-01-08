@@ -49,7 +49,7 @@ struct ActiveWorkout: View {
             // Exercise carousel
             if !workout.exercises.isEmpty {
                 TabView(selection: $currentExerciseIndex) {
-                    ForEach(Array(workout.exercises.enumerated()), id: \.element.id) { index, exercise in
+                    ForEach(Array(workout.exercises.sorted(by: { $0.order < $1.order }).enumerated()), id: \.element.id) { index, exercise in
                         ExerciseCard(
                             exercise: exercise,
                             isCompleted: completedExercises.contains(index),
