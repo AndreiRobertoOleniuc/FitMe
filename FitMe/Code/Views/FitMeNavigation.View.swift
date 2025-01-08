@@ -26,6 +26,10 @@ struct FitMeNavigation: View {
                         Label("Workouts", systemImage: "dumbbell")
                     }
                     .tag(2)
+                RunningWorkoutView()
+                    .tabItem {
+                        Label("Active Workouts", systemImage: "play.fill")
+                    }
                 CalendarView()
                     .tabItem {
                         Label("Calendar", systemImage: "calendar")

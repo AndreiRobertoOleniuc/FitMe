@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-struct ActiveWorkout: View {
+struct ActiveWorkoutView: View {
     @ObservedObject var viewModel: WorkoutViewModel
     let workout: Workout
     @State private var currentExerciseIndex = 0

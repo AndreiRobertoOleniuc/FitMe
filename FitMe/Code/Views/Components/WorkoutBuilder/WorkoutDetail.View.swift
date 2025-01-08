@@ -51,7 +51,7 @@ struct WorkoutDetailView: View {
             SearchExercise(viewModel: viewModel, workout: workout)
         }
         .navigationDestination(isPresented: $startWorkout) {
-            ActiveWorkout(viewModel: viewModel, workout: workout)
+            ActiveWorkoutView(viewModel: viewModel, workout: workout)
         }
     }
     

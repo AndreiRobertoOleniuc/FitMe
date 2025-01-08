@@ -11,7 +11,8 @@ class SwiftDataService {
     private init() {
         let schema = Schema([
             Workout.self,
-            Exercise.self
+            Exercise.self,
+            ActiveWorkout.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
  
