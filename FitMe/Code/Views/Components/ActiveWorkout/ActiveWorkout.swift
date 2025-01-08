@@ -72,10 +72,12 @@ struct ActiveWorkout: View {
                     
                     Spacer()
                     
-                    Button(action: { toggleExerciseCompletion(currentExerciseIndex) }) {
-                        Image(systemName: completedExercises.contains(currentExerciseIndex) ? "checkmark.circle.fill" : "checkmark.circle")
-                            .font(.title2)
-                            .padding()
+                    if timerIsActive {
+                        Button(action: { toggleExerciseCompletion(currentExerciseIndex) }) {
+                            Image(systemName: completedExercises.contains(currentExerciseIndex) ? "checkmark.circle.fill" : "checkmark.circle")
+                                .font(.title2)
+                                .padding()
+                        }
                     }
                     
                     Spacer()
@@ -95,8 +97,8 @@ struct ActiveWorkout: View {
             // Timer controls
             HStack {
                 Button(action: toggleTimer) {
-                    Text(timerIsActive ? "Pause" : "Start")
-                        .frame(width: 80, height: 20)
+                    Text(timerIsActive ? "Pause" : "Continue")
+                        .frame(width: 100, height: 20)
                         .padding()
                         .background(timerIsActive ? Color.blue : Color.green)
                         .foregroundColor(.white)
@@ -104,8 +106,8 @@ struct ActiveWorkout: View {
                 }
                 
                 Button(action: endWorkout) {
-                    Text("End")
-                        .frame(width: 80, height: 20)
+                    Text("End Workout")
+                        .frame(width: 100, height: 20)
                         .padding()
                         .background(Color.red)
                         .foregroundColor(.white)
