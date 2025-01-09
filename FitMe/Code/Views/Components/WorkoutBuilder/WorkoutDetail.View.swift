@@ -12,7 +12,6 @@ struct WorkoutDetailView: View {
             VStack {
                 List {
                     WorkoutDetailsSection(workout: workout)
-                    
                     Section(header: Text("Exercises")) {
                         ForEach(workout.exercises.sorted(by: { $0.order < $1.order })) { exercise in
                             NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
@@ -24,19 +23,6 @@ struct WorkoutDetailView: View {
                         .onDelete(perform: deleteExercise)
                     }
                 }
-                
-                Button(action: {
-                    startWorkout = true
-                }) {
-                    Text("Start Workout")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .cornerRadius(10)
-                }
-                .padding()
             }
         }
         .navigationTitle("Workout Details")
@@ -49,9 +35,6 @@ struct WorkoutDetailView: View {
         }
         .sheet(isPresented: $showingSearch) {
             SearchExercise(viewModel: viewModel, workout: workout)
-        }
-        .navigationDestination(isPresented: $startWorkout) {
-            ActiveWorkoutView(viewModel: viewModel, workout: workout)
         }
     }
     
