@@ -12,7 +12,7 @@ class SwiftDataService {
         let schema = Schema([
             Workout.self,
             Exercise.self,
-            ActiveWorkout.self
+            WorkoutSession.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
  
@@ -44,8 +44,26 @@ class SwiftDataService {
         save()
     }
     
+    func addWorkoutSession(_ workoutSession: WorkoutSession) {
+        modelContext.insert(workoutSession)
+        save()
+    }
     
-    private func save() {
+    func deleteWorkoutSession(_ workoutSession: WorkoutSession) {
+        modelContext.delete(workoutSession)
+        save()
+    }
+
+    func fetchWorkoutSessions() -> [WorkoutSession] {
+        do {
+            return try modelContext.fetch(FetchDescriptor<WorkoutSession>())
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    
+    func save() {
         do {
             try modelContext.save()
         } catch {

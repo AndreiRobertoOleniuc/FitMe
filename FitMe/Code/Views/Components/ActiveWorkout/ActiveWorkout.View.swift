@@ -2,146 +2,184 @@ import SwiftUI
 import Combine
 
 struct ActiveWorkoutView: View {
-    @ObservedObject var viewModel: WorkoutViewModel
-    let workout: Workout
+    @ObservedObject var viewModel: ActiveWorkoutViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    // MARK: - State
     @State private var currentExerciseIndex = 0
     @State private var completedExercises: Set<Int> = []
-    
-    // Timer states
-    @State private var secondsElapsed = 0
-    @State private var timerIsActive = true
-    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var elapsedTime: TimeInterval = 0
+    @State private var timer: Timer?
+
+    private var workout: Workout? {
+        viewModel.activeSession?.workout
+    }
+
+    // MARK: - Body
+    var body: some View {
+        Group {
+            if let workout = workout {
+                VStack(alignment: .leading) {
+                    // Header
+                    WorkoutHeaderView(workoutName: workout.name)
+
+                    // Stats
+                    WorkoutStatsView(
+                        elapsedTime: elapsedTime,
+                        totalVolume: calculateTotalVolume(workout),
+                        completedSets: completedExercises.count
+                    )
+
+                    // Exercise carousel
+                    if !workout.exercises.isEmpty {
+                        ExercisesCarouselView(
+                            exercises: workout.exercises.sorted(by: { $0.order < $1.order }),
+                            currentExerciseIndex: $currentExerciseIndex,
+                            completedExercises: $completedExercises,
+                            onToggleCompletion: toggleExerciseCompletion
+                        )
+                    }
+
+                    Spacer()
+
+                    // Controls (End Workout button)
+                    WorkoutControlsView {
+                        endWorkout()
+                    }
+                }
+                .padding(.horizontal)
+                .frame(maxHeight: .infinity, alignment: .top)
+            } else {
+                Text("No active workout session")
+            }
+        }
+        .onAppear {
+            startTimer()
+        }
+        .onDisappear {
+            stopTimer()
+        }
+        .navigationBarBackButtonHidden(true)
+        .interactiveDismissDisabled()
+    }
+}
+
+// MARK: - Subviews
+
+struct WorkoutHeaderView: View {
+    let workoutName: String
     
     var body: some View {
         VStack(alignment: .leading) {
-            // Workout header
-            Text(workout.name)
+            Text(workoutName)
                 .font(.title3)
                 .bold()
                 .padding([.bottom, .top], 5)
             
             Divider()
-            
-            // Stats section
-            HStack {
-                TimerView(
-                    secondsElapsed: $secondsElapsed,
-                    timerIsActive: $timerIsActive,
-                    timer: timer
-                )
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text("Volume")
-                        .bold()
-                    Text("\(calculateTotalVolume()) kg")
-                }
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text("Sets")
-                        .bold()
-                    Text("\(completedExercises.count)")
-                }
+        }
+    }
+}
+
+struct WorkoutStatsView: View {
+    let elapsedTime: TimeInterval
+    let totalVolume: Int
+    let completedSets: Int
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text("Duration")
+                    .bold()
+                Text(formatTime(elapsedTime))
+                    .font(.body)
+                    .foregroundColor(.blue)
+                    .monospacedDigit()
             }
-            .padding(.vertical)
+            Spacer()
+            VStack(alignment: .trailing) {
+                Text("Volume")
+                    .bold()
+                Text("\(totalVolume) kg")
+            }
+            Spacer()
+            VStack(alignment: .trailing) {
+                Text("Sets")
+                    .bold()
+                Text("\(completedSets)")
+            }
+        }
+        .padding(.vertical)
+        
+        Divider()
+    }
+    
+    private func formatTime(_ time: TimeInterval) -> String {
+        let hours = Int(time) / 3600
+        let minutes = (Int(time) % 3600) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+}
+
+struct ExercisesCarouselView: View {
+    let exercises: [Exercise]
+    @Binding var currentExerciseIndex: Int
+    @Binding var completedExercises: Set<Int>
+    
+    /// Callback to toggle completion for a specific exercise index
+    let onToggleCompletion: (Int) -> Void
+    
+    var body: some View {
+        // TabView for exercises
+        TabView(selection: $currentExerciseIndex) {
+            ForEach(Array(exercises.enumerated()), id: \.element.id) { index, exercise in
+                ExerciseCard(
+                    exercise: exercise,
+                    isCompleted: completedExercises.contains(index),
+                    onComplete: {
+                        onToggleCompletion(index)
+                    }
+                )
+                .tag(index)
+            }
+        }
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .frame(height: 400)
+        
+        // Navigation buttons
+        HStack {
+            Button(action: previousExercise) {
+                Image(systemName: "chevron.left")
+                    .font(.title2)
+                    .padding()
+            }
+            .disabled(currentExerciseIndex == 0)
             
-            Divider()
+            Spacer()
             
-            // Exercise carousel
-            if !workout.exercises.isEmpty {
-                TabView(selection: $currentExerciseIndex) {
-                    ForEach(Array(workout.exercises.sorted(by: { $0.order < $1.order }).enumerated()), id: \.element.id) { index, exercise in
-                        ExerciseCard(
-                            exercise: exercise,
-                            isCompleted: completedExercises.contains(index),
-                            onComplete: { toggleExerciseCompletion(index) }
-                        )
-                        .tag(index)
-                    }
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(height: 400)
-                
-                // Navigation buttons
-                HStack {
-                    Button(action: previousExercise) {
-                        Image(systemName: "chevron.left")
-                            .font(.title2)
-                            .padding()
-                    }
-                    .disabled(currentExerciseIndex == 0)
-                    
-                    Spacer()
-                    
-                    if timerIsActive {
-                        Button(action: { toggleExerciseCompletion(currentExerciseIndex) }) {
-                            Image(systemName: completedExercises.contains(currentExerciseIndex) ? "checkmark.circle.fill" : "checkmark.circle")
-                                .font(.title2)
-                                .padding()
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: nextExercise) {
-                        Image(systemName: "chevron.right")
-                            .font(.title2)
-                            .padding()
-                    }
-                    .disabled(currentExerciseIndex == workout.exercises.count - 1)
-                }
-                .padding()
+            Button(action: {
+                onToggleCompletion(currentExerciseIndex)
+            }) {
+                Image(systemName: completedExercises.contains(currentExerciseIndex)
+                      ? "checkmark.circle.fill" : "checkmark.circle")
+                    .font(.title2)
+                    .padding()
             }
             
             Spacer()
             
-            // Timer controls
-            HStack {
-                Button(action: toggleTimer) {
-                    Text(timerIsActive ? "Pause" : "Continue")
-                        .frame(width: 100, height: 20)
-                        .padding()
-                        .background(timerIsActive ? Color.blue : Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
-                
-                Button(action: endWorkout) {
-                    Text("End Workout")
-                        .frame(width: 100, height: 20)
-                        .padding()
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
+            Button(action: nextExercise) {
+                Image(systemName: "chevron.right")
+                    .font(.title2)
+                    .padding()
             }
-            .frame(maxWidth: .infinity)
-            .frame(alignment: .center)
+            .disabled(currentExerciseIndex == exercises.count - 1)
         }
-        .padding(.horizontal)
-        .frame(maxHeight: .infinity, alignment: .top)
+        .padding()
     }
     
-    private func calculateTotalVolume() -> Int {
-        completedExercises.reduce(0) { total, index in
-            total + Int(workout.exercises[index].weight * Double(workout.exercises[index].sets * workout.exercises[index].reps))
-        }
-    }
-    
-    private func toggleTimer() {
-        if timerIsActive {
-            timer.upstream.connect().cancel()
-        } else {
-            timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-        }
-        timerIsActive.toggle()
-    }
-    
-    private func endWorkout() {
-        timer.upstream.connect().cancel()
-        timerIsActive = false
-        secondsElapsed = 0
-    }
-    
+    // MARK: - Carousel Navigation
     private func previousExercise() {
         if currentExerciseIndex > 0 {
             withAnimation(.easeInOut) {
@@ -151,23 +189,39 @@ struct ActiveWorkoutView: View {
     }
     
     private func nextExercise() {
-        if currentExerciseIndex < workout.exercises.count - 1 {
+        if currentExerciseIndex < exercises.count - 1 {
             withAnimation(.easeInOut) {
                 currentExerciseIndex += 1
             }
         }
     }
+}
+
+struct WorkoutControlsView: View {
+    let endWorkoutAction: () -> Void
     
-    private func toggleExerciseCompletion(_ index: Int) {
-        if completedExercises.contains(index) {
-            completedExercises.remove(index)
-        } else {
-            completedExercises.insert(index)
-            nextExercise()
+    init(_ endWorkoutAction: @escaping () -> Void) {
+        self.endWorkoutAction = endWorkoutAction
+    }
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: endWorkoutAction) {
+                Text("End Workout")
+                    .frame(width: 120, height: 20)
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(5)
+            }
+            Spacer()
         }
+        .padding(.bottom)
     }
 }
 
+// MARK: - Exercise Card (unchanged except for any prop changes if needed)
 struct ExerciseCard: View {
     let exercise: Exercise
     let isCompleted: Bool
@@ -207,32 +261,52 @@ struct ExerciseCard: View {
     }
 }
 
-
-struct TimerView: View {
-    @Binding var secondsElapsed: Int
-    @Binding var timerIsActive: Bool
-    let timer: Publishers.Autoconnect<Timer.TimerPublisher>
-    
-    private var formattedTime: String {
-        let hours = secondsElapsed / 3600
-        let minutes = (secondsElapsed % 3600) / 60
-        let seconds = secondsElapsed % 60
-        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+// MARK: - Private extension / helper methods for ActiveWorkoutView
+extension ActiveWorkoutView {
+    /// Starts the workout timer, updates every second.
+    private func startTimer() {
+        guard let startTime = viewModel.activeSession?.startTime else { return }
+        timer?.invalidate()
+        elapsedTime = Date().timeIntervalSince(startTime)
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            elapsedTime = Date().timeIntervalSince(startTime)
+        }
     }
 
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text("Duration")
-                .bold()
-            Text(formattedTime)
-                .font(.body)
-                .foregroundColor(Color.blue)
-                .monospacedDigit()
+    /// Stops the workout timer.
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    /// Calculates total volume based on all completed exercises.
+    private func calculateTotalVolume(_ workout: Workout) -> Int {
+        completedExercises.reduce(0) { total, index in
+            total + Int(workout.exercises[index].weight *
+                        Double(workout.exercises[index].sets *
+                               workout.exercises[index].reps))
         }
-        .onReceive(timer) { _ in
-            if timerIsActive {
-                secondsElapsed += 1
+    }
+
+    /// Toggles exercise completion and moves to the next exercise if completed.
+    private func toggleExerciseCompletion(_ index: Int) {
+        if completedExercises.contains(index) {
+            completedExercises.remove(index)
+        } else {
+            completedExercises.insert(index)
+            // Automatically go to the next exercise
+            if let workout = workout, index < workout.exercises.count - 1 {
+                withAnimation(.easeInOut) {
+                    currentExerciseIndex += 1
+                }
             }
         }
+    }
+
+    /// Ends the workout session.
+    private func endWorkout() {
+        viewModel.stopWorkoutSession()
+        stopTimer()
+        dismiss()
     }
 }
