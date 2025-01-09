@@ -16,9 +16,9 @@ struct FitMeNavigation: View {
     var body: some View {
         NavigationStack{
             TabView {
-                HomeView()
+                RunningWorkoutView()
                     .tabItem {
-                        Label("Today", systemImage: "house")
+                        Label("Running", systemImage: "play.fill")
                     }
                     .tag(1)
                 WorkoutView()
@@ -26,64 +26,8 @@ struct FitMeNavigation: View {
                         Label("Workouts", systemImage: "dumbbell")
                     }
                     .tag(2)
-                RunningWorkoutView()
-                    .tabItem {
-                        Label("Active Workouts", systemImage: "play.fill")
-                    }
-                CalendarView()
-                    .tabItem {
-                        Label("Calendar", systemImage: "calendar")
-                    }
-                    .tag(3)
-                ProfileView()
-                    .tabItem {
-                        Label("Profile", systemImage: "person")
-                    }
-                    .tag(4)
             }
         }
     }
 
-}
-
-struct ProfileView: View {
-    var body: some View {
-        VStack {
-            Text("Profile Screen")
-                .font(.largeTitle)
-                .padding()
-            Image(systemName: "person.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-        }
-    }
-}
-
-struct HomeView: View {
-    var body: some View {
-        VStack {
-            Text("Home Screen")
-                .font(.largeTitle)
-                .padding()
-            Image(systemName: "house.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-        }
-    }
-}
-
-struct CalendarView: View {
-    var body: some View {
-        VStack {
-            Text("Calendar Screen")
-                .font(.largeTitle)
-                .padding()
-            Image(systemName: "calendar")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-        }
-    }
 }
