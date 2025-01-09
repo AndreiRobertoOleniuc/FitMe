@@ -1,5 +1,22 @@
 import SwiftUI
 import Combine
+import SwiftData
+
+#Preview {
+    ModelContainerPreview {
+        let viewModel = ActiveWorkoutViewModel(dataSource: SwiftDataService.shared)
+        viewModel.fetchAllWorkoutSessions()
+        return ActiveWorkoutView(viewModel: viewModel)
+    } modelContainer: {
+        let schema = Schema([Workout.self, Exercise.self, WorkoutSession.self])
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try! ModelContainer(for: schema, configurations: [configuration])
+    
+        //This View will show data if a Workout is currently active
+        return container
+    }
+}
+
 
 struct ActiveWorkoutView: View {
     @ObservedObject var viewModel: ActiveWorkoutViewModel
