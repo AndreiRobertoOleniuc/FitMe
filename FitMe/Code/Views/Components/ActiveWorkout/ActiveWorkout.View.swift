@@ -50,10 +50,7 @@ struct ActiveWorkoutView: View {
                     // Exercise carousel
                     if !workout.exercises.isEmpty {
                         ActiveExercisesCarouselView(
-                            exercises: workout.exercises.sorted(by: { $0.order < $1.order }),
-                            currentExerciseIndex: $currentExerciseIndex,
-                            completedExercises: $completedExercises,
-                            onToggleCompletion: toggleExerciseCompletion
+                            viewModel: viewModel
                         )
                     }
 
@@ -102,21 +99,6 @@ struct ActiveWorkoutView: View {
             total + Int(workout.exercises[index].weight *
                         Double(workout.exercises[index].sets *
                                workout.exercises[index].reps))
-        }
-    }
-
-    /// Toggles exercise completion and moves to the next exercise if completed.
-    private func toggleExerciseCompletion(_ index: Int) {
-        if completedExercises.contains(index) {
-            completedExercises.remove(index)
-        } else {
-            completedExercises.insert(index)
-            // Automatically go to the next exercise
-            if let workout = workout, index < workout.exercises.count - 1 {
-                withAnimation(.easeInOut) {
-                    currentExerciseIndex += 1
-                }
-            }
         }
     }
 

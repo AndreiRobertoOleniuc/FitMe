@@ -13,6 +13,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     @Published var availabileWorkouts: [Workout] = []
     @Published var errorMessage: String?
     @Published var isLoading = false
+    
     var activeSession: WorkoutSession? {
         workoutSessions.first(where: { $0.isActive })
     }
@@ -45,5 +46,35 @@ class ActiveWorkoutViewModel: ObservableObject {
     
     func findAllPossibleWorkouts() {
         availabileWorkouts = dataSource.fetchWorkouts()
+    }
+    
+    func toggleCompletedExercise(_ index: Int){
+        if let activeSession{
+            if activeSession.completedExecises.contains(index){
+                activeSession.completedExecises.remove(at: index)
+            } else {
+                activeSession.completedExecises.append(index)
+                nextExercise()
+            }
+            dataSource.save()
+        }
+    }
+       
+    func nextExercise(){
+        if let activeSession {
+            if activeSession.currentExercise < activeSession.workout.exercises.count - 1{
+                activeSession.currentExercise += 1
+                dataSource.save()
+            }
+        }
+    }
+       
+    func previousExercise(){
+        if let activeSession {
+            if activeSession.currentExercise > 0{
+                activeSession.currentExercise -= 1
+                dataSource.save()
+            }
+        }
     }
 }
