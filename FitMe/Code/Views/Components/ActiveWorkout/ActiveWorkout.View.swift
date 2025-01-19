@@ -20,7 +20,6 @@ struct ActiveWorkoutView: View {
     @ObservedObject var viewModel: ActiveWorkoutViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var completedExercises: Set<Int> = []
     @State private var elapsedTime: TimeInterval = 0
     @State private var timer: Timer?
 
@@ -36,7 +35,7 @@ struct ActiveWorkoutView: View {
 
                     ActiveWorkoutStatsView(
                         elapsedTime: elapsedTime,
-                        totalVolume: calculateTotalVolume(workout),
+                        totalVolume: viewModel.calculateTotalVolume(),
                         completedSets: viewModel.activeSession?.completedExecises.count ?? 0
                     )
 
@@ -82,15 +81,6 @@ struct ActiveWorkoutView: View {
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
-    }
-
-    /// Calculates total volume based on all completed exercises.
-    private func calculateTotalVolume(_ workout: Workout) -> Int {
-        completedExercises.reduce(0) { total, index in
-            total + Int(workout.exercises[index].weight *
-                        Double(workout.exercises[index].sets *
-                               workout.exercises[index].reps))
-        }
     }
 
     /// Ends the workout session.

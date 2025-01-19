@@ -89,4 +89,12 @@ class ActiveWorkoutViewModel: ObservableObject {
             dataSource.save()
         }
     }
+    
+    func calculateTotalVolume() -> Int {
+        guard let activeSession = activeSession else { return 0 }
+        return activeSession.completedExecises.reduce(0) { total, index in
+            let exercise = activeSession.workout.exercises[index]
+            return total + Int(exercise.weight * Double(exercise.sets * exercise.reps))
+        }
+    }
 }

@@ -23,7 +23,7 @@ struct ActiveWorkoutStatsView: View {
             }
             Spacer()
             VStack(alignment: .trailing) {
-                Text("Sets")
+                Text("Completed")
                     .bold()
                 Text("\(completedSets)")
             }
