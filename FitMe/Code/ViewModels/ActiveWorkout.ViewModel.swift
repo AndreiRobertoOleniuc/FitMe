@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import SwiftUI
 
 @MainActor
 class ActiveWorkoutViewModel: ObservableObject {
@@ -63,8 +64,10 @@ class ActiveWorkoutViewModel: ObservableObject {
     func nextExercise(){
         if let activeSession {
             if activeSession.currentExercise < activeSession.workout.exercises.count - 1{
-                activeSession.currentExercise += 1
-                dataSource.save()
+                withAnimation(.easeInOut){
+                    activeSession.currentExercise += 1
+                    dataSource.save()
+                }
             }
         }
     }
@@ -72,8 +75,10 @@ class ActiveWorkoutViewModel: ObservableObject {
     func previousExercise(){
         if let activeSession {
             if activeSession.currentExercise > 0{
-                activeSession.currentExercise -= 1
-                dataSource.save()
+                withAnimation(.easeInOut){
+                    activeSession.currentExercise -= 1
+                    dataSource.save()
+                }
             }
         }
     }

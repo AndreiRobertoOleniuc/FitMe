@@ -11,8 +11,6 @@ import SwiftData
         let schema = Schema([Workout.self, Exercise.self, WorkoutSession.self])
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try! ModelContainer(for: schema, configurations: [configuration])
-    
-        //This View will show data if a Workout is currently active
         return container
     }
 }
@@ -22,8 +20,6 @@ struct ActiveWorkoutView: View {
     @ObservedObject var viewModel: ActiveWorkoutViewModel
     @Environment(\.dismiss) private var dismiss
 
-    // MARK: - State
-    @State private var currentExerciseIndex = 0
     @State private var completedExercises: Set<Int> = []
     @State private var elapsedTime: TimeInterval = 0
     @State private var timer: Timer?
@@ -32,22 +28,18 @@ struct ActiveWorkoutView: View {
         viewModel.activeSession?.workout
     }
 
-    // MARK: - Body
     var body: some View {
         Group {
             if let workout = workout {
                 VStack(alignment: .leading) {
-                    // Header
                     ActiveWorkoutHeaderView(workoutName: workout.name)
 
-                    // Stats
                     ActiveWorkoutStatsView(
                         elapsedTime: elapsedTime,
                         totalVolume: calculateTotalVolume(workout),
-                        completedSets: completedExercises.count
+                        completedSets: viewModel.activeSession?.completedExecises.count ?? 0
                     )
 
-                    // Exercise carousel
                     if !workout.exercises.isEmpty {
                         ActiveExercisesCarouselView(
                             viewModel: viewModel
@@ -56,7 +48,6 @@ struct ActiveWorkoutView: View {
 
                     Spacer()
 
-                    // Controls (End Workout button)
                     ActiveWorkoutControlsView {
                         endWorkout()
                     }
