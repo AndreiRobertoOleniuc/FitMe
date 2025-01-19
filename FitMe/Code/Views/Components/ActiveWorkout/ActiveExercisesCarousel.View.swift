@@ -2,16 +2,24 @@ import SwiftUI
 
 struct ActiveExercisesCarouselView: View {
     @ObservedObject var viewModel: ActiveWorkoutViewModel
-    @State private var selectedTabIndex: Int = 0
     
     init(viewModel: ActiveWorkoutViewModel) {
         self.viewModel = viewModel
     }
     
+    private var currentExerciseBinding: Binding<Int> {
+        Binding(
+            get: { viewModel.activeSession?.currentExercise ?? 0 },
+            set: { newValue in
+                viewModel.setCurrentExercise(newValue)
+            }
+        )
+    }
+    
     var body: some View {
         if let activeSession = viewModel.activeSession {
             // TabView for exercises
-            TabView(selection: $selectedTabIndex) {
+            TabView(selection: currentExerciseBinding) {
                 ForEach(Array(activeSession.workout.exercises.enumerated()), id: \.element.id) { index, exercise in
                     ActiveExerciseCard(
                         exercise: exercise,
@@ -28,7 +36,7 @@ struct ActiveExercisesCarouselView: View {
             
             // Navigation buttons
             HStack {
-                Button(action: previousExercise) {
+                Button(action: viewModel.previousExercise) {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .padding()
@@ -48,7 +56,7 @@ struct ActiveExercisesCarouselView: View {
                     
                 Spacer()
                 
-                Button(action: nextExercise) {
+                Button(action: viewModel.nextExercise) {
                     Image(systemName: "chevron.right")
                         .font(.title2)
                         .padding()
@@ -58,18 +66,6 @@ struct ActiveExercisesCarouselView: View {
             .padding()
         } else {
             Text("No active session")
-        }
-    }
-    
-    private func previousExercise() {
-        withAnimation(.easeInOut) {
-            viewModel.nextExercise()
-        }
-    }
-    
-    private func nextExercise() {
-        withAnimation(.easeInOut) {
-            viewModel.previousExercise()
         }
     }
 }

@@ -77,4 +77,11 @@ class ActiveWorkoutViewModel: ObservableObject {
             }
         }
     }
+    
+    func setCurrentExercise(_ index: Int){
+        if let activeSession {
+            activeSession.currentExercise = index
+            dataSource.save()
+        }
+    }
 }
