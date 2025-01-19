@@ -52,7 +52,7 @@ class ActiveWorkoutViewModel: ObservableObject {
     func toggleCompletedExercise(_ index: Int){
         if let activeSession{
             if activeSession.completedExecises.contains(index){
-                activeSession.completedExecises.remove(at: index)
+                activeSession.completedExecises.removeAll { $0 == index }
             } else {
                 activeSession.completedExecises.append(index)
                 nextExercise()
@@ -96,5 +96,25 @@ class ActiveWorkoutViewModel: ObservableObject {
             let exercise = activeSession.workout.exercises[index]
             return total + Int(exercise.weight * Double(exercise.sets * exercise.reps))
         }
+    }
+    
+    @Published var elapsedTime: TimeInterval = 0
+    private var timer: Timer?
+
+    func startTimer() {
+        guard let startTime = activeSession?.startTime else { return }
+        timer?.invalidate()
+        elapsedTime = Date().timeIntervalSince(startTime)
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.elapsedTime = Date().timeIntervalSince(startTime)
+            }
+        }
+    }
+
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }

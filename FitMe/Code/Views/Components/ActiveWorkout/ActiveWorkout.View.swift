@@ -20,21 +20,14 @@ struct ActiveWorkoutView: View {
     @ObservedObject var viewModel: ActiveWorkoutViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var elapsedTime: TimeInterval = 0
-    @State private var timer: Timer?
-
-    private var workout: Workout? {
-        viewModel.activeSession?.workout
-    }
-
     var body: some View {
         Group {
-            if let workout = workout {
+            if let workout = viewModel.activeSession?.workout {
                 VStack(alignment: .leading) {
                     ActiveWorkoutHeaderView(workoutName: workout.name)
 
                     ActiveWorkoutStatsView(
-                        elapsedTime: elapsedTime,
+                        elapsedTime: viewModel.elapsedTime,
                         totalVolume: viewModel.calculateTotalVolume(),
                         completedSets: viewModel.activeSession?.completedExecises.count ?? 0
                     )
@@ -58,35 +51,19 @@ struct ActiveWorkoutView: View {
             }
         }
         .onAppear {
-            startTimer()
+            viewModel.startTimer()
         }
         .onDisappear {
-            stopTimer()
+            viewModel.stopTimer()
         }
         .navigationBarBackButtonHidden(true)
         .interactiveDismissDisabled()
-    }
-    
-    /// Starts the workout timer, updates every second.
-    private func startTimer() {
-        guard let startTime = viewModel.activeSession?.startTime else { return }
-        timer?.invalidate()
-        elapsedTime = Date().timeIntervalSince(startTime)
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            elapsedTime = Date().timeIntervalSince(startTime)
-        }
-    }
-
-    /// Stops the workout timer.
-    private func stopTimer() {
-        timer?.invalidate()
-        timer = nil
     }
 
     /// Ends the workout session.
     private func endWorkout() {
         viewModel.stopWorkoutSession()
-        stopTimer()
+        viewModel.stopTimer()
         dismiss()
     }
 }
