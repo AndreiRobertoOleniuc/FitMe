@@ -85,10 +85,12 @@ struct WorkoutCard: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .frame(minHeight: 120)
         .padding(16)
-        .background(Color(.systemBackground))
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(12)
-        .shadow(radius: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
     }
 }
