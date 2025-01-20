@@ -80,6 +80,17 @@ class StatsViewModel: ObservableObject {
         let uniqueNames = Set(allExercises.map { $0.name })
         return Array(uniqueNames).sorted()
     }
+
+    func didUserWorkout(on date: Date) -> Bool {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        return workoutSessions.contains { session in
+            if let sessionDate = session.startTime {
+                return Calendar.current.startOfDay(for: sessionDate) == startOfDay
+            }
+            return false
+        }
+    }
+
 }
 
 extension Calendar {
