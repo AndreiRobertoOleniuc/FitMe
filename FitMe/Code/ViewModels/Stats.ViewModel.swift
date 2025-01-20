@@ -90,6 +90,19 @@ class StatsViewModel: ObservableObject {
             return false
         }
     }
+    
+    func getMostPerformedExercise() -> (exerciseName: String, category: String, count: Int)? {
+        let allExercises = workoutSessions.flatMap { $0.performedExercises }
+        let exerciseCounts = Dictionary(grouping: allExercises) { $0.name }
+            .mapValues { $0.count }
+        
+        guard let mostPerformed = exerciseCounts.max(by: { $0.value < $1.value }),
+              let exercise = allExercises.first(where: { $0.name == mostPerformed.key }) else {
+            return nil
+        }
+        
+        return (exerciseName: exercise.name, category: exercise.category, count: mostPerformed.value)
+    }
 
 }
 

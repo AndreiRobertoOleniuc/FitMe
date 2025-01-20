@@ -119,6 +119,17 @@ struct HomeScreen: View {
                         .frame(width: 20, height: 20)
                 }
             }
+            
+            
+            if let mostPerformed = statsViewModel.getMostPerformedExercise() {
+                CompactExerciseProgressChart(
+                    exerciseName: mostPerformed.exerciseName,
+                    category: mostPerformed.category,
+                    performCount: mostPerformed.count,
+                    progressData: statsViewModel.getWeightProgressForExercise(named: mostPerformed.exerciseName)
+                )
+            }
+            
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
