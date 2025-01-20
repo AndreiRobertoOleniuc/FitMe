@@ -8,7 +8,8 @@ struct PastWorkoutSession: View {
             // Large title header at the top, aligned to leading
             HStack {
                 Text("Past Workout Sessions")
-                    .font(.largeTitle)
+                    .font(.title)
+                    .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }

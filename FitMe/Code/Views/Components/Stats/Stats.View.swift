@@ -9,7 +9,8 @@ struct StatsView: View {
             // Header "Progression" aligned to leading
             HStack {
                 Text("Progression")
-                    .font(.largeTitle)
+                    .font(.title)
+                    .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }

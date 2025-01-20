@@ -10,21 +10,19 @@ struct RunningWorkoutView: View {
                 ActiveWorkoutView(viewModel: viewModel)
             } else {
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        
                         Text("Start a Workout")
                             .font(.title)
-                            .bold(true)
+                            .bold()
                             .foregroundColor(.primary)
-                            .padding(.leading)
-
+                        
                         if !viewModel.availabileWorkouts.isEmpty {
                             Text("Select a workout to start an active training session")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
-                                .padding(.leading)
-                                .padding(.top, 8)
                         }
-
+                        
                         LazyVStack(spacing: 20) {
                             ForEach(viewModel.availabileWorkouts.sorted(by: { $0.name < $1.name }), id: \.self) { workout in
                                 Button(action: {
@@ -34,10 +32,13 @@ struct RunningWorkoutView: View {
                                 }
                             }
                         }
-                        .padding(.vertical)
+                        .padding(.top)
                     }
+                    .padding(.horizontal)
+                    .padding(.top)
                 }
             }
+
         }
         .onAppear {
             viewModel.findAllPossibleWorkouts()
@@ -89,6 +90,5 @@ struct WorkoutCard: View {
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(radius: 2)
-        .padding(.horizontal)
     }
 }
