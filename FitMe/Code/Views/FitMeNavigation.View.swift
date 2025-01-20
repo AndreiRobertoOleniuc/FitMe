@@ -13,6 +13,8 @@ import SwiftData
 }
 
 struct FitMeNavigation: View {
+    @State private var selectedTab = 1
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -23,8 +25,8 @@ struct FitMeNavigation: View {
                         .frame(height: UITabBarController().tabBar.frame.height)
                         .ignoresSafeArea()
                 }
-                TabView {
-                    HomeScreen()
+                TabView(selection: $selectedTab) {
+                    HomeScreen(selectedTab: $selectedTab)
                         .tabItem {
                             Label("Home", systemImage: "house")
                         }
@@ -57,7 +59,9 @@ struct FitMeNavigation: View {
 
 struct HomeScreen: View {
     @StateObject var statsViewModel = StatsViewModel(dataSource: .shared)
-    
+    @StateObject var workoutViewModel = ActiveWorkoutViewModel(dataSource: .shared)
+    @Binding var selectedTab: Int
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             
@@ -66,17 +70,11 @@ struct HomeScreen: View {
                 Text(currentDate)
                     .font(.title)
                     .fontWeight(.bold)
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Scheduled workout")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        Text("Upper body")
-                            .font(.subheadline)
-                            .foregroundColor(.blue)
+                if let nextWorkout = workoutViewModel.getNextWorkoutSuggestion() {
+                    NextWorkoutView(workout: nextWorkout) {
+                        workoutViewModel.startWorkoutSession(nextWorkout)
+                        selectedTab = 2
                     }
-                    Spacer()
-                    Image(systemName: "calendar")
                 }
             }
             
@@ -136,6 +134,8 @@ struct HomeScreen: View {
         .padding()
         .onAppear {
             statsViewModel.fetchAllWorkoutSessions()
+            workoutViewModel.findAllPossibleWorkouts()
+            workoutViewModel.fetchAllWorkoutSessions()
         }
     }
     
@@ -144,5 +144,35 @@ struct HomeScreen: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
         return formatter.string(from: Date())
+    }
+}
+
+struct NextWorkoutView: View {
+    let workout: Workout
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Next workout")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(workout.name)
+                            .font(.subheadline)
+                            .foregroundColor(.blue)
+                        Text("\(workout.exercises.count) exercises")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "calendar")
+                }
+            }
+            .padding()
+            .background(Color(uiColor: .secondarySystemBackground))
+            .cornerRadius(10)
+        }
     }
 }

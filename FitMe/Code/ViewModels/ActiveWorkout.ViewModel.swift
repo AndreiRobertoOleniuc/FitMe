@@ -27,6 +27,25 @@ class ActiveWorkoutViewModel: ObservableObject {
         availabileWorkouts = dataSource.fetchWorkouts()
     }
     
+    func getNextWorkoutSuggestion() -> Workout? {
+        // Get last workout session
+        guard let lastSession = workoutSessions
+            .filter({ !$0.isActive })
+            .sorted(by: { ($0.startTime ?? Date()) > ($1.startTime ?? Date()) })
+            .first else {
+            return availabileWorkouts.first
+        }
+        
+        // Find index of last workout
+        guard let currentIndex = availabileWorkouts.firstIndex(where: { $0.id == lastSession.workout.id }) else {
+            return availabileWorkouts.first
+        }
+        
+        // Get next workout, or wrap around to first
+        let nextIndex = (currentIndex + 1) % availabileWorkouts.count
+        return availabileWorkouts[nextIndex]
+    }
+    
     //MARK: Active Workout Functionality
     func toggleCompletedExercise(_ index: Int){
         if let activeSession{
