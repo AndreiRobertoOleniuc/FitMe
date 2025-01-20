@@ -21,9 +21,14 @@ struct VolumeProgressChart: View {
                 )
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day, count: 1)) {
+                AxisMarks(values: .stride(by: .month, count: 1)) { value in // Use months for labels
                     AxisGridLine()
-                    AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(date, format: .dateTime.month(.abbreviated)) // Show abbreviated month (e.g., "Jan")
+                                .font(.caption) // Adjust the font size
+                        }
+                    }
                 }
             }
             .chartYAxis {
