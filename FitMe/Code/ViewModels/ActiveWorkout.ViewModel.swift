@@ -22,33 +22,12 @@ class ActiveWorkoutViewModel: ObservableObject {
     func fetchAllWorkoutSessions() {
         workoutSessions = dataSource.fetchWorkoutSessions()
     }
-    
-    func startWorkoutSession(_ workout: Workout) {
-        if let activeWorkout = workoutSessions.first(where: { $0.isActive }){
-            if(activeWorkout.workout.id == workout.id){
-                return
-            }
-            activeWorkout.isActive = false
-            dataSource.save()
-        }
-        let newWorkoutSession = WorkoutSession(workout: workout,startTime: Date(), isActive: true)
-        dataSource.addWorkoutSession(newWorkoutSession)
-        fetchAllWorkoutSessions()
-    }
-    
-    func stopWorkoutSession() {
-        let activeWorkouts = workoutSessions.filter { $0.isActive }
-        activeWorkouts.forEach { workout in
-            workout.isActive = false
-        }
-        dataSource.save()
-        fetchAllWorkoutSessions()
-    }
-    
+
     func findAllPossibleWorkouts() {
         availabileWorkouts = dataSource.fetchWorkouts()
     }
     
+    //MARK: Active Workout Functionality
     func toggleCompletedExercise(_ index: Int){
         if let activeSession{
             if activeSession.completedExecises.contains(index){
@@ -89,6 +68,30 @@ class ActiveWorkoutViewModel: ObservableObject {
             dataSource.save()
         }
     }
+    
+    func startWorkoutSession(_ workout: Workout) {
+        if let activeWorkout = workoutSessions.first(where: { $0.isActive }){
+            if(activeWorkout.workout.id == workout.id){
+                return
+            }
+            activeWorkout.isActive = false
+            dataSource.save()
+        }
+        let newWorkoutSession = WorkoutSession(workout: workout,startTime: Date(), isActive: true)
+        dataSource.addWorkoutSession(newWorkoutSession)
+        fetchAllWorkoutSessions()
+    }
+    
+    
+    func stopWorkoutSession() {
+        let activeWorkouts = workoutSessions.filter { $0.isActive }
+        activeWorkouts.forEach { workout in
+            workout.isActive = false
+        }
+        dataSource.save()
+        fetchAllWorkoutSessions()
+    }
+    
     
     func calculateTotalVolume() -> Int {
         guard let activeSession = activeSession else { return 0 }
