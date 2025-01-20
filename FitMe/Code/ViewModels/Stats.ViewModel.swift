@@ -64,6 +64,22 @@ class StatsViewModel: ObservableObject {
                 return (date, exercise.weight)
             }
     }
+    
+    func getAllCategories() -> [String] {
+        let allExercises = workoutSessions.flatMap { $0.performedExercises }
+        let categories = Set(allExercises.map { $0.category })
+        return Array(categories).sorted()
+    }
+    
+    /// Returns all unique exercise names for a given category.
+    func getExercises(for category: String) -> [String] {
+        let allExercises = workoutSessions
+            .flatMap { $0.performedExercises }
+            .filter { $0.category == category }
+        
+        let uniqueNames = Set(allExercises.map { $0.name })
+        return Array(uniqueNames).sorted()
+    }
 }
 
 extension Calendar {

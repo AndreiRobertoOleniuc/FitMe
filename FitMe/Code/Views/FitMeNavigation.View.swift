@@ -87,14 +87,22 @@ struct StatsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Fixed Picker at top
+            // Header "Progression" aligned to leading
+            HStack {
+                Text("Progression")
+                    .font(.largeTitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+            }
+            
+            // Segmented Picker at the top
             Picker("Stats Type", selection: $selectedTab) {
                 Text("Volume").tag(0)
                 Text("Frequency").tag(1)
-                Text("Progress").tag(2)
+                Text("By Category").tag(2)
             }
             .pickerStyle(.segmented)
-            .padding()
+            .padding(.horizontal)
             .background(Color(UIColor.systemBackground))
             
             // Scrollable content
@@ -105,7 +113,7 @@ struct StatsView: View {
                 case 1:
                     WorkoutFrequencyChart(data: viewModel.getWorkoutsPerWeek())
                 case 2:
-                    WeightProgressChart(viewModel: viewModel)
+                    CategoryWeightProgressView(viewModel: viewModel)
                 default:
                     EmptyView()
                 }
@@ -118,6 +126,8 @@ struct StatsView: View {
     }
 }
 
+
+
 struct VolumeProgressChart: View {
     let data: [(Date, Int)]
     
@@ -129,25 +139,32 @@ struct VolumeProgressChart: View {
             
             Chart(data, id: \.0) { item in
                 LineMark(
-                    x: .value("Date", item.0),
+                    x: .value("Date", item.0, unit: .day),
                     y: .value("Volume", item.1)
                 )
                 PointMark(
-                    x: .value("Date", item.0),
+                    x: .value("Date", item.0, unit: .day),
                     y: .value("Volume", item.1)
                 )
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
+                AxisMarks(values: .stride(by: .day, count: 1)) {
                     AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel(format: .dateTime.month().day())
+                    AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 }
             }
+            .chartYAxis {
+                AxisMarks {
+                    AxisGridLine()
+                    AxisValueLabel()
+                }
+            }
+            .frame(height: 300)
             .padding()
         }
     }
 }
+
 
 
 struct WorkoutFrequencyChart: View {
@@ -183,58 +200,88 @@ struct WorkoutFrequencyChart: View {
 }
 
 
-struct WeightProgressChart: View {
+struct CategoryWeightProgressView: View {
     @StateObject var viewModel: StatsViewModel
-    @State private var selectedExercise: String = ""
+    
+    /// Holds the currently selected category.
+    @State private var selectedCategory: String = ""
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack{
-                Text("Select an Exercise")
-                Picker("Select Exercise", selection: $selectedExercise) {
-                    ForEach(
-                        Array(
-                            Set(
-                                viewModel.workoutSessions
-                                    .flatMap { $0.performedExercises }
-                                    .map { $0.name }
-                            )
-                        ), id: \.self
-                    ) { exercise in
-                        Text(exercise).tag(exercise)
+            // Category Picker
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Select a Category")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                
+                Picker("Select a Category", selection: $selectedCategory) {
+                    Text("None").tag("")
+                    ForEach(viewModel.getAllCategories(), id: \.self) { category in
+                        Text(category).tag(category)
                     }
                 }
                 .pickerStyle(.menu)
-            }.padding(.bottom)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+            }
             
-            if !selectedExercise.isEmpty {
-                Text("Weight Progress - \(selectedExercise)")
-                    .font(.headline)
-                
-                Chart(viewModel.getWeightProgressForExercise(named: selectedExercise), id: \.0) { item in
-                    LineMark(
-                        x: .value("Date", item.0),
-                        y: .value("Weight (kg)", item.1)
-                    )
-                    PointMark(
-                        x: .value("Date", item.0),
-                        y: .value("Weight (kg)", item.1)
-                    )
-                }
-                .chartXAxis {
-                    AxisMarks {
-                        AxisGridLine()
-                        AxisValueLabel(format: .dateTime.month().day())
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks {
-                        AxisGridLine()
-                        AxisValueLabel()
+            // If a category is chosen, show all exercise charts
+            if !selectedCategory.isEmpty {
+                ScrollView {
+                    let exercisesInCategory = viewModel.getExercises(for: selectedCategory)
+                    
+                    // For each exercise in that category, show a chart
+                    ForEach(exercisesInCategory, id: \.self) { exerciseName in
+                        VStack(alignment: .leading) {
+                            Text("Weight Progress - \(exerciseName)")
+                                .font(.headline)
+                                .padding(.top)
+                            
+                            let chartData = viewModel.getWeightProgressForExercise(named: exerciseName)
+                            
+                            if chartData.isEmpty {
+                                // If there's no data for that exercise
+                                Text("No data available for \(exerciseName)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .padding(.bottom)
+                            } else {
+                                Chart(chartData, id: \.0) { (date, weight) in
+                                    LineMark(
+                                        x: .value("Date", date),
+                                        y: .value("Weight (kg)", weight)
+                                    )
+                                    PointMark(
+                                        x: .value("Date", date),
+                                        y: .value("Weight (kg)", weight)
+                                    )
+                                }
+                                .chartXAxis {
+                                    AxisMarks {
+                                        AxisGridLine()
+                                        AxisValueLabel(format: .dateTime.month().day())
+                                    }
+                                }
+                                .chartYAxis {
+                                    AxisMarks {
+                                        AxisGridLine()
+                                        AxisValueLabel()
+                                    }
+                                }
+                                .frame(height: 200)
+                                .padding(.bottom)
+                            }
+                        }
+                        .padding(.horizontal)
                     }
                 }
             }
         }
-        .padding()
+        .padding(.top)
+        .onAppear {
+            viewModel.fetchAllWorkoutSessions()
+        }
     }
 }
