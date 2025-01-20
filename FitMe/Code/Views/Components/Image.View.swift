@@ -2,8 +2,8 @@ import SwiftUI
 
 struct ImageView: View {
     let imageURL: URL?
-    let width: CGFloat
-    let height: CGFloat
+    let width: CGFloat?
+    let height: CGFloat?
     let cornerRadius: CGFloat
     let systemName: String
     
@@ -36,7 +36,7 @@ struct ImageView: View {
     }
     
     
-    init(imageURL: URL?, width: CGFloat = 60, height: CGFloat = 60,cornerRadius: CGFloat = 8, systemName: String = "dumbbell.fill") {
+    init(imageURL: URL?, width: CGFloat? = nil, height: CGFloat? = nil, cornerRadius: CGFloat = 8, systemName: String = "dumbbell.fill") {
         self.imageURL = imageURL
         self.width = width
         self.height = height
@@ -46,21 +46,30 @@ struct ImageView: View {
 
     
     var body: some View {
-        AsyncImage(url: imageURL) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: width, height: height)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        } placeholder: {
-            Image(systemName: systemName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: width/2, height: height/2)
-                .frame(width: width, height: height)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        }
-    }
+           AsyncImage(url: imageURL) { image in
+               image
+                   .resizable()
+                   .aspectRatio(contentMode: .fit)
+                   .frame(
+                       maxWidth: width ?? .infinity,
+                       maxHeight: height ?? width ?? 200
+                   )
+                   .background(Color.white)
+                   .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+           } placeholder: {
+               Image(systemName: systemName)
+                   .resizable()
+                   .aspectRatio(contentMode: .fit)
+                   .frame(
+                       maxWidth: (width ?? 200)/2,
+                       maxHeight: (height ?? width ?? 200)/2
+                   )
+                   .frame(
+                       maxWidth: width ?? .infinity,
+                       maxHeight: height ?? width ?? 200
+                   )
+                   .background(Color.gray.opacity(0.1))
+                   .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+           }
+       }
 }

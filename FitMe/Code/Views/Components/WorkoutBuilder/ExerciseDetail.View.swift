@@ -27,8 +27,6 @@ struct ExerciseDetailView: View {
             VStack(spacing: 20) {
                 ImageView(
                     imageURL: ImageView.getFullImageURL(exercise.image),
-                    width: .infinity,
-                    height: .infinity,
                     cornerRadius: 12,
                     systemName: ImageView.getSystemImageName(exercise.category)
                 )
