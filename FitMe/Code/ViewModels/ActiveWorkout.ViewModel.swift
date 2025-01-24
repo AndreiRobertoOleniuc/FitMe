@@ -24,7 +24,12 @@ class ActiveWorkoutViewModel: ObservableObject {
     }
 
     func findAllPossibleWorkouts() {
-        availabileWorkouts = dataSource.fetchWorkouts()
+        availabileWorkouts = dataSource.fetchWorkouts().filter { workout in
+            if workout.exercises.isEmpty {
+                return false
+            }
+            return true
+        }
     }
     
     func getNextWorkoutSuggestion() -> Workout? {
