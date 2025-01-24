@@ -38,12 +38,19 @@ struct WorkoutDetailView: View {
         }
     }
     
-    private func deleteExercise(at offsets: IndexSet) {
+   private func deleteExercise(at offsets: IndexSet) {
+        // Sort first to match the displayed order
+        let sortedExercises = workout.exercises.sorted { $0.order < $1.order }
         offsets.forEach { index in
-            let exercise = workout.exercises[index]
+            let exercise = sortedExercises[index]
             viewModel.deleteExerciseFromWorkout(exercise, to: workout)
         }
-    }
+        // Reassign order
+        let updatedExercises = workout.exercises.sorted { $0.order < $1.order }
+        for (newIndex, item) in updatedExercises.enumerated() {
+            item.order = newIndex
+        }
+    }   
 }
 
 
