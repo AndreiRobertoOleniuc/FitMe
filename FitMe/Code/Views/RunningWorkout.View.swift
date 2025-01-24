@@ -23,7 +23,7 @@ struct RunningWorkoutView: View {
                         }
                         
                         LazyVStack(spacing: 20) {
-                            ForEach(viewModel.availabileWorkouts.sorted(by: { $0.name < $1.name }), id: \.self) { workout in
+                            ForEach(viewModel.availabileWorkouts, id: \.self) { workout in
                                 Button(action: {
                                     viewModel.startWorkoutSession(workout)
                                 }) {
@@ -50,7 +50,7 @@ struct RunningWorkoutView: View {
 struct WorkoutCard: View {
     let workout: Workout
     
-    var totalSets: Int {
+    private var totalSets: Int {
         workout.exercises.reduce(0) { $0 + $1.sets }
     }
     

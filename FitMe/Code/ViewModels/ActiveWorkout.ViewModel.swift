@@ -29,7 +29,7 @@ class ActiveWorkoutViewModel: ObservableObject {
                 return false
             }
             return true
-        }
+        }.sorted(by: { $0.name < $1.name })
     }
     
     func getNextWorkoutSuggestion() -> Workout? {
