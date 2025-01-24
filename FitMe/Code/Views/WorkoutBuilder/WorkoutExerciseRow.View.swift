@@ -10,7 +10,7 @@ struct WorkoutExerciseRow: View {
                 width: 60,
                 height: 60,
                 cornerRadius: 8,
-                systemName: ImageView.getSystemImageName(exercise.category)
+                systemName: exercise.systemImage
             )
             VStack(alignment: .leading) {
                 Text(exercise.name)

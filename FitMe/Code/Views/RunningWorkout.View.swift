@@ -63,7 +63,7 @@ struct WorkoutCard: View {
                     width: 100,
                     height: 100,
                     cornerRadius: 12,
-                    systemName: ImageView.getSystemImageName(firstExercise.category)
+                    systemName: firstExercise.systemImage
                 )
             }
             

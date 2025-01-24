@@ -13,7 +13,7 @@ struct ActiveExerciseCard: View {
                 width: 150,
                 height: 150,
                 cornerRadius: 10,
-                systemName: ImageView.getSystemImageName(exercise.category)
+                systemName: exercise.systemImage
             )
             
             Text(exercise.name)

@@ -23,8 +23,7 @@ struct SearchExercise: View {
                                     imageURL: ImageView.getFullImageURL(suggestion.data.image),
                                     width: 120,
                                     height: 120,
-                                    cornerRadius: 8,
-                                    systemName: ImageView.getSystemImageName(suggestion.data.category)
+                                    cornerRadius: 8
                                 )
                                 VStack(alignment: .leading) {
                                     Text(suggestion.value)

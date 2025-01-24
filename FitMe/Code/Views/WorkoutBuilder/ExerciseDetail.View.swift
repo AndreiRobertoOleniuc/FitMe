@@ -28,7 +28,7 @@ struct ExerciseDetailView: View {
                 ImageView(
                     imageURL: ImageView.getFullImageURL(exercise.image),
                     cornerRadius: 12,
-                    systemName: ImageView.getSystemImageName(exercise.category)
+                    systemName: exercise.systemImage
                 )
                 
                 exerciseHeader
