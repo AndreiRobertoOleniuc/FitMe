@@ -2,7 +2,6 @@ import SwiftUI
 
 struct RunningWorkoutView: View {
     @StateObject private var viewModel = ActiveWorkoutViewModel(dataSource: .shared)
-    @State private var selectedWorkout: Workout?
 
     var body: some View {
         Group {
