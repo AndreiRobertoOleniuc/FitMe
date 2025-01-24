@@ -16,6 +16,11 @@ class WorkoutViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var workouts: [Workout] = []
     
+    @Published var showingAddWorkout = false
+    @Published var newWorkoutName = ""
+    @Published var newWorkoutDescription = ""
+
+    
     func fetchExercises(query: String){
         isLoading = true
         Task {
@@ -45,12 +50,26 @@ class WorkoutViewModel: ObservableObject {
         workouts = dataSource.fetchWorkouts()
     }
     
-    func addWorkout(workout: Workout){
+    func addWorkout() {
+        let workout = Workout(
+            name: newWorkoutName,
+            workoutDescription: newWorkoutDescription
+        )
         dataSource.updateOrAddWorkout(workout)
+        fetchWorkouts()
+        resetNewWorkoutForm()
+    }
+    
+    private func resetNewWorkoutForm() {
+        newWorkoutName = ""
+        newWorkoutDescription = ""
     }
  
-    func deleteWorkout(_ workout: Workout) {
-        dataSource.deleteWorkout(workout)
+    func deleteWorkout(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let workout = workouts[index]
+            dataSource.deleteWorkout(workout)
+        }
         fetchWorkouts()
     }
     

@@ -2,17 +2,16 @@ import SwiftUI
 import SwiftData
  
 struct WorkoutView: View {
-    @StateObject private var viewModelExercise = WorkoutViewModel(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"), dataSource: .shared)
- 
-    @State private var showingAddWorkout = false
-    @State private var newWorkoutName = ""
-    @State private var newWorkoutDescription = ""
+    @StateObject private var viewModel = WorkoutViewModel(
+        dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"),
+        dataSource: .shared
+    )
  
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModelExercise.workouts) { workout in
-                    NavigationLink(destination: WorkoutDetailView(workout: workout, viewModel: viewModelExercise)) {
+                ForEach(viewModel.workouts) { workout in
+                    NavigationLink(destination: WorkoutDetailView(workout: workout, viewModel: viewModel)) {
                         VStack(alignment: .leading) {
                             Text(workout.name)
                                 .font(.headline)
@@ -22,57 +21,37 @@ struct WorkoutView: View {
                         }
                     }
                 }
-                .onDelete(perform: deleteWorkout)
+                .onDelete(perform: viewModel.deleteWorkout)
             }
             .navigationTitle("Workouts")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingAddWorkout = true }) {
+                    Button(action: { viewModel.showingAddWorkout = true }) {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showingAddWorkout) {
+            .sheet(isPresented: $viewModel.showingAddWorkout) {
                 NavigationView {
                     Form {
-                        TextField("Workout Name", text: $newWorkoutName)
-                        TextField("Description", text: $newWorkoutDescription)
+                        TextField("Workout Name", text: $viewModel.newWorkoutName)
+                        TextField("Description", text: $viewModel.newWorkoutDescription)
                     }
                     .navigationTitle("New Workout")
                     .navigationBarItems(
                         leading: Button("Cancel") {
-                            showingAddWorkout = false
+                            viewModel.showingAddWorkout = false
                         },
                         trailing: Button("Save") {
-                            addWorkout()
-                            showingAddWorkout = false
+                            viewModel.addWorkout()
+                            viewModel.showingAddWorkout = false
                         }
                     )
                 }
             }
         }
         .onAppear {
-            viewModelExercise.fetchWorkouts()
+            viewModel.fetchWorkouts()
         }
     }
-    
-    private func addWorkout() {
-        let workout = Workout(
-            name: newWorkoutName,
-            workoutDescription: newWorkoutDescription
-        )
-        viewModelExercise.addWorkout(workout: workout)
-        viewModelExercise.fetchWorkouts()
-        newWorkoutName = ""
-        newWorkoutDescription = ""
-    }
-    
-    private func deleteWorkout(at offsets: IndexSet) {
-        offsets.forEach { index in
-            let workout = viewModelExercise.workouts[index]
-            viewModelExercise.deleteWorkout(workout)
-        }
-        viewModelExercise.fetchWorkouts()
-    }
- 
 }
