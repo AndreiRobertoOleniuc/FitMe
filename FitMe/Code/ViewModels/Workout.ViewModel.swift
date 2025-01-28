@@ -3,11 +3,11 @@ import SwiftData
  
 @MainActor
 class WorkoutViewModel: ObservableObject {
-    private let searchExerciseModel: SearchExerciseModel
+    private let searchExerciseModel: SearchExercisService
     private let dataSource: SwiftDataService
     
     init(dataService: DataServiceProtocol, dataSource: SwiftDataService) {
-        self.searchExerciseModel = SearchExerciseModel(dataService: dataService)
+        self.searchExerciseModel = SearchExercisService(dataService: dataService)
         self.dataSource = dataSource
     }
         

@@ -1,4 +1,4 @@
-class SearchExerciseModel {
+class SearchExercisService {
     let dataService: DataServiceProtocol
     
     init(dataService: DataServiceProtocol) {

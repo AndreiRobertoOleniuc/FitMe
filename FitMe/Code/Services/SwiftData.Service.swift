@@ -21,7 +21,7 @@ class SwiftDataService {
         self.modelContext = modelContainer.mainContext
     }
     
-    // Workout CRUD operations
+    /// Workout & Exercise CRUD operations
     func fetchWorkouts() -> [Workout] {
         do {
             return try modelContext.fetch(FetchDescriptor<Workout>())
@@ -45,6 +45,16 @@ class SwiftDataService {
         save()
     }
     
+    /// WorkoutSession CRUD operations
+    func fetchWorkoutSessions() -> [WorkoutSession] {
+        do {
+            return try modelContext.fetch(FetchDescriptor<WorkoutSession>())
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    
     func addWorkoutSession(_ workoutSession: WorkoutSession) {
         modelContext.insert(workoutSession)
         save()
@@ -55,15 +65,7 @@ class SwiftDataService {
         save()
     }
 
-    func fetchWorkoutSessions() -> [WorkoutSession] {
-        do {
-            return try modelContext.fetch(FetchDescriptor<WorkoutSession>())
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    
+    /// Commiting the changes
     func save() {
         do {
             try modelContext.save()
