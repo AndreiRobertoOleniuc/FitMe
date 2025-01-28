@@ -98,7 +98,6 @@ class WorkoutViewModel: ObservableObject {
         fetchWorkouts()
     }
     
-    
     func deleteExerciseFromWorkout(at offsets: IndexSet, to workout: Workout) {
         offsets.forEach { index in
             let exercise = workout.exercises[index]
