@@ -45,7 +45,6 @@ struct HomeScreen: View {
             
             // Double the width: 14 columns instead of 7
             let columns = Array(repeating: GridItem(.fixed(20), spacing: 4), count: 14)
-            
             LazyVGrid(columns: columns, spacing: 4) {
                 // Double the days: 70 instead of 35
                 ForEach(0..<70, id: \.self) { offset in

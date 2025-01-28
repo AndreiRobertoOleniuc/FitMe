@@ -12,14 +12,18 @@ class StatsViewModel: ObservableObject {
     @Published var workoutSessions: [WorkoutSession] = []
 
     func fetchAllWorkoutSessions() {
-        workoutSessions = dataSource.fetchWorkoutSessions()
+        workoutSessions = dataSource.fetchWorkoutSessions().filter { !$0.isActive }
     }
     
-    func deleteWorkoutSession(_ session: WorkoutSession) {
-        dataSource.deleteWorkoutSession(session)
-        fetchAllWorkoutSessions()
+    func deleteWorkoutSession(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let session = workoutSessions[index]
+            dataSource.deleteWorkoutSession(session)
+            fetchAllWorkoutSessions()
+        }
     }
     
+    //Past Workouts
     func calculateTotalVolumeForSession(_ session: WorkoutSession) -> Int {
         session.completedExecises.reduce(0) { total, index in
             if index < session.performedExercises.count {

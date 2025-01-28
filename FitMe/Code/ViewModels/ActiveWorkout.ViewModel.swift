@@ -51,7 +51,7 @@ class ActiveWorkoutViewModel: ObservableObject {
         return availabileWorkouts[nextIndex]
     }
     
-    //MARK: Active Workout Functionality
+    /// Active Workout Functionality
     func toggleCompletedExercise(_ index: Int){
         if let activeSession{
             if activeSession.completedExecises.contains(index){
@@ -125,6 +125,7 @@ class ActiveWorkoutViewModel: ObservableObject {
         }
     }
     
+    ///Timer Functionality
     @Published var elapsedTime: TimeInterval = 0
     private var timer: Timer?
 
