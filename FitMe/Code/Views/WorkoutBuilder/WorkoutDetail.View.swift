@@ -11,16 +11,20 @@ struct WorkoutDetailView: View {
         ZStack {
             VStack {
                 List {
-                    WorkoutDetailsSection(workout: workout)
-                    Section(header: Text("Exercises")) {
-                        ForEach(workout.exercises.sorted(by: { $0.order < $1.order })) { exercise in
-                            NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
-                                WorkoutExerciseRow(
-                                    exercise: exercise
-                                )
+                    if let selectedWorkout = viewModel.getCurrentlySelectedWorkout() {
+                        WorkoutDetailsSection(workout: selectedWorkout)
+                        Section(header: Text("Exercises")) {
+                            ForEach(selectedWorkout.exercises) { exercise in
+                                NavigationLink(destination: ExerciseDetailView(workout: workout, exercise: exercise, viewModel: viewModel)) {
+                                    WorkoutExerciseRow(
+                                        exercise: exercise
+                                    )
+                                }
+                            }
+                            .onDelete { offsets in
+                                viewModel.deleteExerciseFromWorkout(at: offsets, to: selectedWorkout)
                             }
                         }
-                        .onDelete(perform: deleteExercise)
                     }
                 }
             }
@@ -36,19 +40,8 @@ struct WorkoutDetailView: View {
         .sheet(isPresented: $showingSearch) {
             SearchExercise(viewModel: viewModel, workout: workout)
         }
+        .onAppear {
+            viewModel.selectWorkout(workout)
+        }
     }
-    
-   private func deleteExercise(at offsets: IndexSet) {
-        // Sort first to match the displayed order
-        let sortedExercises = workout.exercises.sorted { $0.order < $1.order }
-        offsets.forEach { index in
-            let exercise = sortedExercises[index]
-            viewModel.deleteExerciseFromWorkout(exercise, to: workout)
-        }
-        // Reassign order
-        let updatedExercises = workout.exercises.sorted { $0.order < $1.order }
-        for (newIndex, item) in updatedExercises.enumerated() {
-            item.order = newIndex
-        }
-    }   
 }

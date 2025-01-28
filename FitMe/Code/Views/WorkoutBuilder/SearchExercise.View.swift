@@ -45,7 +45,7 @@ struct SearchExercise: View {
                 Task {
                     try? await Task.sleep(for: .milliseconds(300))
                     if !newValue.isEmpty {
-                        viewModel.fetchExercises(query: newValue)
+                        viewModel.searchExercise(query: newValue)
                     }
                 }
             }

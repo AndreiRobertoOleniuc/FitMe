@@ -3,25 +3,33 @@ import SwiftData
  
 @MainActor
 class WorkoutViewModel: ObservableObject {
-    private let model: ExerciseModel
+    private let model: SearchExerciseModel
     private let dataSource: SwiftDataService
     
     init(dataService: DataServiceProtocol, dataSource: SwiftDataService) {
-        self.model = ExerciseModel(dataService: dataService)
+        self.model = SearchExerciseModel(dataService: dataService)
         self.dataSource = dataSource
     }
-    
-    @Published var searchedExercises: [Suggestion] = []
+        
     @Published var errorMessage: String?
     @Published var isLoading = false
+    
+    //Workouts
     @Published var workouts: [Workout] = []
     
+    //Adding New Workout
     @Published var showingAddWorkout = false
     @Published var newWorkoutName = ""
     @Published var newWorkoutDescription = ""
+    
+    //SearchedExercises
+    @Published var searchedExercises: [Suggestion] = []
+
+    //For the Detail Screen
+    @Published var selectedWorkout: UUID?
 
     
-    func fetchExercises(query: String){
+    func searchExercise(query: String){
         isLoading = true
         Task {
             do {
@@ -46,8 +54,12 @@ class WorkoutViewModel: ObservableObject {
         }
     }
     
+    ///Workouts
     func fetchWorkouts(){
-        workouts = dataSource.fetchWorkouts()
+        workouts = dataSource.fetchWorkouts().sorted(by: { $0.name < $1.name })
+        workouts.forEach { workout in
+            workout.exercises = workout.exercises.sorted(by: { $0.order < $1.order })
+        }
     }
     
     func addWorkout() {
@@ -56,15 +68,10 @@ class WorkoutViewModel: ObservableObject {
             workoutDescription: newWorkoutDescription
         )
         dataSource.updateOrAddWorkout(workout)
-        fetchWorkouts()
         resetNewWorkoutForm()
+        fetchWorkouts()
     }
     
-    private func resetNewWorkoutForm() {
-        newWorkoutName = ""
-        newWorkoutDescription = ""
-    }
- 
     func deleteWorkout(at offsets: IndexSet) {
         offsets.forEach { index in
             let workout = workouts[index]
@@ -73,6 +80,11 @@ class WorkoutViewModel: ObservableObject {
         fetchWorkouts()
     }
     
+    func getCurrentlySelectedWorkout() -> Workout? {
+        return workouts.first(where: { $0.id == selectedWorkout })
+    }
+    
+    ///Exercise -> Workout
     func addExerciseToWorkout(_ exercise: ExerciseAPI, to workout: Workout) {
         workout.addExercise(convertToExercise(exercise))
         dataSource.updateOrAddWorkout(workout)
@@ -83,17 +95,33 @@ class WorkoutViewModel: ObservableObject {
         guard let index = workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
         workout.exercises[index] = exercise
         dataSource.updateOrAddWorkout(workout)
+        fetchWorkouts()
     }
     
     
-    func deleteExerciseFromWorkout(_ exercise: Exercise, to workout: Workout) {
-        workout.exercises.removeAll { $0.id == exercise.id }
-        dataSource.deleteExercise(exercise)
-        dataSource.updateOrAddWorkout(workout)
+    func deleteExerciseFromWorkout(at offsets: IndexSet, to workout: Workout) {
+        offsets.forEach { index in
+            let exercise = workout.exercises[index]
+            workout.exercises.remove(at: index)
+            dataSource.deleteExercise(exercise)
+            dataSource.updateOrAddWorkout(workout)
+            fetchWorkouts()
+        }
+    }
+    
+    ///Helpers
+    func selectWorkout(_ workout: Workout) {
+        selectedWorkout = workout.id
     }
     
     private func convertToExercise(_ exercise: ExerciseAPI) -> Exercise {
         return Exercise(id: exercise.id, baseID: exercise.baseID, name: exercise.name, category: exercise.category, image: exercise.image, imageThumbnail: exercise.imageThumbnail)
     }
+    
+    private func resetNewWorkoutForm() {
+        newWorkoutName = ""
+        newWorkoutDescription = ""
+    }
+ 
  
 }
