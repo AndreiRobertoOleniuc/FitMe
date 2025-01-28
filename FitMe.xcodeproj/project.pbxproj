@@ -40,11 +40,6 @@
 			path = FitMeTests;
 			sourceTree = "<group>";
 		};
-		01627E822CFB4B2800696853 /* FitMeUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FitMeUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +72,6 @@
 			children = (
 				01627E642CFB4B2600696853 /* FitMe */,
 				01627E782CFB4B2800696853 /* FitMeTests */,
-				01627E822CFB4B2800696853 /* FitMeUITests */,
 				01627E632CFB4B2600696853 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -152,9 +146,6 @@
 			);
 			dependencies = (
 				01627E812CFB4B2800696853 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				01627E822CFB4B2800696853 /* FitMeUITests */,
 			);
 			name = FitMeUITests;
 			packageProductDependencies = (
