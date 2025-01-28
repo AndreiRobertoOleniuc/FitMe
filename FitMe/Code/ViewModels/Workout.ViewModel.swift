@@ -3,11 +3,11 @@ import SwiftData
  
 @MainActor
 class WorkoutViewModel: ObservableObject {
-    private let model: SearchExerciseModel
+    private let searchExerciseModel: SearchExerciseModel
     private let dataSource: SwiftDataService
     
     init(dataService: DataServiceProtocol, dataSource: SwiftDataService) {
-        self.model = SearchExerciseModel(dataService: dataService)
+        self.searchExerciseModel = SearchExerciseModel(dataService: dataService)
         self.dataSource = dataSource
     }
         
@@ -33,7 +33,7 @@ class WorkoutViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                let fetchedSuggestions = try await model.searchExercise(query: query)
+                let fetchedSuggestions = try await searchExerciseModel.searchExercise(query: query)
                 searchedExercises = fetchedSuggestions.map { suggestion in
                     Suggestion(
                         value: suggestion.value,
