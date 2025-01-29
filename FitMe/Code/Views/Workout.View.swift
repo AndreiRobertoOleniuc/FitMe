@@ -3,8 +3,8 @@ import SwiftData
  
 struct WorkoutView: View {
     @StateObject private var viewModel = WorkoutViewModel(
-        dataService: RestService(baseURL: "https://wger.de/api/v2/exercise"),
-        dataSource: .shared
+        searchExerciseModel: SearchExercisService(dataService: RestService(baseURL: "https://wger.de/api/v2/exercise")),
+        dataSource: SwiftDataService.shared
     )
  
     var body: some View {

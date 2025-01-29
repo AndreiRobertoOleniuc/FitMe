@@ -1,6 +1,6 @@
 import SwiftData
  
-class SwiftDataService {
+class SwiftDataService: DataSourceProtocol {
     private let modelContainer: ModelContainer
     private let modelContext: ModelContext
     

@@ -3,7 +3,7 @@ import SwiftData
 
 @MainActor
 class StatsViewModel: ObservableObject {
-    private let dataSource: SwiftDataService
+    private let dataSource: DataSourceProtocol
     
     init(dataSource: SwiftDataService) {
         self.dataSource = dataSource

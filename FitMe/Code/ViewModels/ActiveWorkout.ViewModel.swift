@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 class ActiveWorkoutViewModel: ObservableObject {
-    private let dataSource: SwiftDataService
+    private let dataSource: DataSourceProtocol
     
     init(dataSource: SwiftDataService) {
         self.dataSource = dataSource

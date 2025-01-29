@@ -14,19 +14,11 @@
 			remoteGlobalIDString = 01627E612CFB4B2600696853;
 			remoteInfo = FitMe;
 		};
-		01627E802CFB4B2800696853 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 01627E5A2CFB4B2600696853 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 01627E612CFB4B2600696853;
-			remoteInfo = FitMe;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		01627E622CFB4B2600696853 /* FitMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01627E752CFB4B2800696853 /* FitMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		01627E7F2CFB4B2800696853 /* FitMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,13 +49,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		01627E7C2CFB4B2800696853 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -81,7 +66,6 @@
 			children = (
 				01627E622CFB4B2600696853 /* FitMe.app */,
 				01627E752CFB4B2800696853 /* FitMeTests.xctest */,
-				01627E7F2CFB4B2800696853 /* FitMeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,26 +118,6 @@
 			productReference = 01627E752CFB4B2800696853 /* FitMeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		01627E7E2CFB4B2800696853 /* FitMeUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 01627E8F2CFB4B2800696853 /* Build configuration list for PBXNativeTarget "FitMeUITests" */;
-			buildPhases = (
-				01627E7B2CFB4B2800696853 /* Sources */,
-				01627E7C2CFB4B2800696853 /* Frameworks */,
-				01627E7D2CFB4B2800696853 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				01627E812CFB4B2800696853 /* PBXTargetDependency */,
-			);
-			name = FitMeUITests;
-			packageProductDependencies = (
-			);
-			productName = FitMeUITests;
-			productReference = 01627E7F2CFB4B2800696853 /* FitMeUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -168,10 +132,6 @@
 						CreatedOnToolsVersion = 16.1;
 					};
 					01627E742CFB4B2800696853 = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 01627E612CFB4B2600696853;
-					};
-					01627E7E2CFB4B2800696853 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = 01627E612CFB4B2600696853;
 					};
@@ -193,7 +153,6 @@
 			targets = (
 				01627E612CFB4B2600696853 /* FitMe */,
 				01627E742CFB4B2800696853 /* FitMeTests */,
-				01627E7E2CFB4B2800696853 /* FitMeUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -207,13 +166,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		01627E732CFB4B2800696853 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		01627E7D2CFB4B2800696853 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -237,13 +189,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		01627E7B2CFB4B2800696853 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -251,11 +196,6 @@
 			isa = PBXTargetDependency;
 			target = 01627E612CFB4B2600696853 /* FitMe */;
 			targetProxy = 01627E762CFB4B2800696853 /* PBXContainerItemProxy */;
-		};
-		01627E812CFB4B2800696853 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 01627E612CFB4B2600696853 /* FitMe */;
-			targetProxy = 01627E802CFB4B2800696853 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -506,52 +446,6 @@
 			};
 			name = Release;
 		};
-		01627E902CFB4B2800696853 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = RDZQCSSG7A;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.fhnw.ios.FitMeUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = FitMe;
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Debug;
-		};
-		01627E912CFB4B2800696853 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = RDZQCSSG7A;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.fhnw.ios.FitMeUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = FitMe;
-				XROS_DEPLOYMENT_TARGET = 2.1;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -578,15 +472,6 @@
 			buildConfigurations = (
 				01627E8D2CFB4B2800696853 /* Debug */,
 				01627E8E2CFB4B2800696853 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		01627E8F2CFB4B2800696853 /* Build configuration list for PBXNativeTarget "FitMeUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				01627E902CFB4B2800696853 /* Debug */,
-				01627E912CFB4B2800696853 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
