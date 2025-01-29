@@ -18,30 +18,11 @@ Seamlessly connect to fitness-related APIs to enrich your experience with curate
 ### 🗾️ Local Backup with SwiftData
 Never lose your progress! All your data is securely saved locally using SwiftData.
 
----
-
-## Coming Soon
-
 ### ⏱️ Timer & Counters
 Built-in timers and counters to help you stay focused and efficient during your workouts.
 
 ### 📊 Progress Charts
 Visualize your fitness journey with interactive charts that showcase your progress over time.
-
-### 📅 Calendar History
-Easily track your workout history with a calendar view that highlights your most active days.
-
----
-
-## Prerequisites
-
-To run the application, you need to create a file named `Environment.swift` in the folder `FitMe` with the following content:
-
-```swift
-let wgerApiKey = "<your api key>"
-```
-
-Replace `<your api key>` with a valid API key for the external service you are using.
 
 ---
 
@@ -54,17 +35,15 @@ Replace `<your api key>` with a valid API key for the external service you are u
 
 2. Navigate to the project directory:
     ```bash
-    cd FitnessWorkoutTracker
+    cd FitMe
     ```
 
 3. Open the project in Xcode:
     ```bash
-    open FitnessWorkoutTracker.xcodeproj
+    open FitMe.xcodeproj
     ```
 
-4. Add your `Environment.swift` file as mentioned in the prerequisites.
-
-5. Build and run the application on a simulator or a physical device.
+4. Build and run the application on a simulator or a physical device.
 
 ---
 
@@ -82,7 +61,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For questions, feedback, or feature requests, feel free to reach out at [andreioleniucroberto@gmail.com].
+For questions, feedback, or feature requests, feel free to reach out at [andreioleniucroberto@gmail.com,sh.scherer1808@gmail.com].
 
 ---
 
